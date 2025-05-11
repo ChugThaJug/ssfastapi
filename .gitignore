@@ -4,6 +4,31 @@ static/
 frontend/package-lock.json/
 frontend/.svelte-kit/
 app/__pycache__/
-frontend/src/lib/components/ui/
+app/.pytest_cache/
+app/.mypy_cache/
+app/.coverage/
 
+
+
+node_modules
+
+# Output
+.output
+.vercel
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 

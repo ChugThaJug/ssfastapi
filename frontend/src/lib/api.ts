@@ -19,6 +19,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
   return response;
 }
 
+// Video-related API functions
 export async function processVideo(youtubeUrl: string, processingMode: string) {
   const response = await fetchWithAuth(`${API_BASE_URL}/video/process_video/`, {
     method: 'POST',
@@ -51,4 +52,25 @@ export async function updateVideoTranscript(id: string, transcript: string) {
   return await response.json();
 }
 
-// ... (other API functions remain the same)
+// Auth-related API functions
+export async function loginWithOAuth(provider: string, code: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/auth/login/oauth/${provider}?code=${code}`);
+  const data = await response.json();
+  localStorage.setItem('token', data.access_token);
+  return data;
+}
+
+// Billing-related API functions
+export async function getSubscriptionStatus() {
+  const response = await fetchWithAuth(`${API_BASE_URL}/billing/subscription_status`);
+  return await response.json();
+}
+
+export async function createSubscription(plan: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/billing/create_subscription`, {
+    method: 'POST',
+    body: JSON.stringify({ plan }),
+  });
+
+  return await response.json();
+}

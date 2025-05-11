@@ -48,8 +48,10 @@ async def process_video(video: VideoProcessRequest, db: Session = Depends(get_db
         logger.error(f"Error processing video: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error processing video: {str(e)}")
 
-@router.get("/video/{video_id}", response_model=VideoResponse)
-def get_video(video_id: str, db: Session = Depends(get_db)):
+# app/api/endpoints/video.py
+@router.get("/{video_id}", response_model=VideoResponse)
+def get_video(video_id: str, db: Session = Depends(get_db)): 
+    # No additional validation on video_id
     logger.info(f"Received request to get video: {video_id}")
     db_video = db.query(Video).filter(Video.youtube_id == video_id).first()
     if db_video is None:
@@ -58,7 +60,12 @@ def get_video(video_id: str, db: Session = Depends(get_db)):
     logger.info(f"Successfully retrieved video: {video_id}")
     return VideoResponse.model_validate(db_video)
 
-@router.put("/video/{video_id}/summary", response_model=VideoResponse)
+# app/api/endpoints/video.py
+@router.get("/test")
+def test_endpoint():
+    return {"message": "Video router test endpoint is working"}
+
+@router.put("/{video_id}/summary", response_model=VideoResponse)
 def update_video_summary(video_id: str, video_update: VideoUpdate, db: Session = Depends(get_db)):
     logger.info(f"Received request to update summary for video: {video_id}")
     db_video = db.query(Video).filter(Video.youtube_id == video_id).first()
@@ -73,7 +80,7 @@ def update_video_summary(video_id: str, video_update: VideoUpdate, db: Session =
     logger.info(f"Successfully updated summary for video: {video_id}")
     return VideoResponse.model_validate(db_video)
 
-@router.put("/video/{video_id}/transcript", response_model=VideoResponse)
+@router.put("/{video_id}/transcript", response_model=VideoResponse)
 def update_video_transcript(video_id: str, video_update: VideoUpdate, db: Session = Depends(get_db)):
     logger.info(f"Received request to update transcript for video: {video_id}")
     db_video = db.query(Video).filter(Video.youtube_id == video_id).first()
