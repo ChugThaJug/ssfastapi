@@ -1,0 +1,9 @@
+step-fast/
+frontend/node_modules/
+static/
+frontend/package-lock.json/
+frontend/.svelte-kit/
+app/__pycache__/
+frontend/src/lib/components/ui/
+
+

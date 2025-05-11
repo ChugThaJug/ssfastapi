@@ -1,0 +1,5632 @@
+.\frontend\README.md
+---
+# create-svelte
+
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+
+## Creating a project
+
+If you're seeing this, you've probably already done this step. Congrats!
+
+```bash
+# create a new project in the current directory
+npm create svelte@latest
+
+# create a new project in my-app
+npm create svelte@latest my-app
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+
+
+---
+.\frontend\package.json
+---
+{
+	"name": "frontend",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-static": "^3.0.5",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@tailwindcss/typography": "^0.5.15",
+		"autoprefixer": "^10.4.20",
+		"bits-ui": "^0.21.16",
+		"lucide-svelte": "^0.452.0",
+		"shadcn-svelte": "^0.13.0",
+		"svelte": "^4.2.7",
+		"svelte-check": "^4.0.0",
+		"tailwindcss": "^3.4.9",
+		"typescript": "^5.0.0",
+		"vite": "^5.0.3"
+	},
+	"type": "module",
+	"dependencies": {
+		"@tiptap/core": "^2.8.0",
+		"@tiptap/extension-document": "^2.8.0",
+		"@tiptap/extension-hard-break": "^2.8.0",
+		"@tiptap/extension-paragraph": "^2.8.0",
+		"@tiptap/extension-text": "^2.8.0",
+		"@tiptap/pm": "^2.8.0",
+		"@tiptap/starter-kit": "^2.8.0",
+		"clsx": "^2.1.1",
+		"mode-watcher": "^0.4.1",
+		"tailwind-merge": "^2.5.3",
+		"tailwind-variants": "^0.2.1"
+	}
+}
+
+
+---
+.\frontend\postcss.config.js
+---
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+};
+
+
+---
+.\frontend\svelte.config.js
+---
+import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
+	// for more information about preprocessors
+	preprocess: vitePreprocess(),
+
+	kit: {
+		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
+		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
+		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
+		adapter: adapter()
+	}
+};
+
+export default config;
+
+
+---
+.\frontend\tailwind.config.js
+---
+import typography from "@tailwindcss/typography";
+import { fontFamily } from "tailwindcss/defaultTheme";
+
+/** @type {import('tailwindcss').Config} */
+export default {
+	darkMode: "class",
+	content: ["./src/**/*.{html,js,svelte,ts}"],
+	theme: {
+		container: {
+			center: true,
+			screens: {
+				"2xl": "1440px",
+			},
+		},
+		extend: {
+			colors: {
+				border: {
+					DEFAULT: "hsl(var(--border-card))",
+					input: "hsl(var(--border-input))",
+					"input-hover": "hsl(var(--border-input-hover))",
+				},
+				background: {
+					DEFAULT: "hsl(var(--background) / <alpha-value>)",
+					alt: "hsl(var(--background-alt) / <alpha-value>)",
+				},
+				foreground: {
+					DEFAULT: "hsl(var(--foreground) / <alpha-value>)",
+					alt: "hsl(var(--foreground-alt) / <alpha-value>)",
+				},
+				muted: {
+					DEFAULT: "hsl(var(--muted) / <alpha-value>)",
+					foreground: "hsl(var(--muted-foreground))",
+				},
+				dark: {
+					DEFAULT: "hsl(var(--dark) / <alpha-value>)",
+					4: "hsl(var(--dark-04))",
+					10: "hsl(var(--dark-10))",
+					40: "hsl(var(--dark-40))",
+				},
+				accent: {
+					DEFAULT: "hsl(var(--accent) / <alpha-value>)",
+					foreground: "hsl(var(--accent-foreground) / <alpha-value>)",
+				},
+				destructive: {
+					DEFAULT: "hsl(var(--destructive) / <alpha-value>)",
+				},
+				contrast: {
+					DEFAULT: "hsl(var(--contrast) / <alpha-value>)",
+				},
+			},
+			fontFamily: {
+				sans: ["Inter", ...fontFamily.sans],
+				mono: ["Source Code Pro", ...fontFamily.mono],
+				alt: ["Courier", ...fontFamily.sans],
+			},
+			fontSize: {
+				xxs: "10px",
+			},
+			borderWidth: {
+				6: "6px",
+			},
+			borderRadius: {
+				card: "16px",
+				"card-lg": "20px",
+				"card-sm": "10px",
+				input: "9px",
+				button: "5px",
+				"5px": "5px",
+				"9px": "9px",
+				"10px": "10px",
+				"15px": "15px",
+			},
+			height: {
+				input: "3rem",
+				"input-sm": "2.5rem",
+			},
+			boxShadow: {
+				mini: "var(--shadow-mini)",
+				"mini-inset": "var(--shadow-mini-inset)",
+				popover: "var(--shadow-popover)",
+				kbd: "var(--shadow-kbd)",
+				btn: "var(--shadow-btn)",
+				card: "var(--shadow-card)",
+				"date-field-focus": "var(--shadow-date-field-focus)",
+			},
+			opacity: {
+				8: "0.08",
+			},
+			scale: {
+				80: ".80",
+				98: ".98",
+				99: ".99",
+			},
+		},
+	},
+	plugins: [typography],
+};
+
+---
+.\frontend\tailwind.config.ts
+---
+import type { Config } from "tailwindcss";
+
+export default {
+  content: ["./src/**/*.{html,js,svelte,ts}"],
+
+  theme: {
+    extend: {}
+  },
+
+  plugins: []
+} as Config;
+
+
+---
+.\frontend\tsconfig.json
+---
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler"
+	}
+	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
+	// except $lib which is handled by https://kit.svelte.dev/docs/configuration#files
+	//
+	// If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes
+	// from the referenced tsconfig.json - TypeScript does not merge them in
+}
+
+
+---
+.\frontend\vite.config.ts
+---
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+	plugins: [sveltekit()]
+});
+
+
+---
+.\frontend\src\app.css
+---
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		/* Colors */
+		--background: 0 0% 100%;
+		--background-alt: 0 0% 100%;
+		--foreground: 0 0% 9%;
+		--foreground-alt: 0 0% 32%;
+		--muted: 240 5% 96%;
+		--muted-foreground: 0 0% 9% / 0.4;
+		--border: 240 6% 10%;
+		--border-input: 240 6% 10% / 0.17;
+		--border-input-hover: 240 6% 10% / 0.4;
+		--border-card: 240 6% 10% / 0.1;
+		--dark: 240 6% 10%;
+		--dark-10: 240 6% 10% / 0.1;
+		--dark-40: 240 6% 10% / 0.4;
+		--dark-04: 240 6% 10% / 0.04;
+		--accent: 204 94% 94%;
+		--accent-foreground: 204 80% 16%;
+		--destructive: 347 77% 50%;
+
+		/* black */
+		--constrast: 0 0% 0%;
+
+		/* Shadows */
+		--shadow-mini: 0px 1px 0px 1px rgba(0, 0, 0, 0.04);
+		--shadow-mini-inset: 0px 1px 0px 0px rgba(0, 0, 0, 0.04) inset;
+		--shadow-popover: 0px 7px 12px 3px hsla(var(--dark-10));
+		--shadow-kbd: 0px 2px 0px 0px rgba(0, 0, 0, 0.07);
+		--shadow-btn: 0px 1px 0px 1px rgba(0, 0, 0, 0.03);
+		--shadow-card: 0px 2px 0px 1px rgba(0, 0, 0, 0.04);
+		--shadow-date-field-focus: 0px 0px 0px 3px rgba(24, 24, 27, 0.17);
+	}
+
+	.dark {
+		/* Colors */
+		--background: 0 0% 5%;
+		--background-alt: 0 0% 8%;
+		--foreground: 0 0% 95%;
+		--foreground-alt: 0 0% 70%;
+		--muted: 240 4% 16%;
+		--muted-foreground: 0 0% 100% / 0.4;
+		--border: 0 0% 96%;
+		--border-input: 0 0% 96% / 0.17;
+		--border-input-hover: 0 0% 96% / 0.4;
+		--border-card: 0 0% 96% / 0.1;
+		--dark: 0 0% 96%;
+		--dark-40: 0 0% 96% / 0.4;
+		--dark-10: 0 0% 96% / 0.1;
+		--dark-04: 0 0% 96% / 0.04;
+		--accent: 204 90 90%;
+		--accent-foreground: 204 94% 94%;
+		--destructive: 350 89% 60%;
+
+		/* white */
+		--constrast: 0 0% 100%;
+
+		/* Shadows */
+		--shadow-mini: 0px 1px 0px 1px rgba(0, 0, 0, 0.3);
+		--shadow-mini-inset: 0px 1px 0px 0px rgba(0, 0, 0, 0.5) inset;
+		--shadow-popover: 0px 7px 12px 3px hsla(0deg 0% 0% / 30%);
+		--shadow-kbd: 0px 2px 0px 0px rgba(255, 255, 255, 0.07);
+		--shadow-btn: 0px 1px 0px 1px rgba(0, 0, 0, 0.2);
+		--shadow-card: 0px 2px 0px 1px rgba(0, 0, 0, 0.4);
+		--shadow-date-field-focus: 0px 0px 0px 3px rgba(244, 244, 245, 0.1);
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+	html {
+		-webkit-text-size-adjust: 100%;
+		font-variation-settings: normal;
+	}
+	body {
+		@apply bg-background text-foreground;
+		font-feature-settings:
+			"rlig" 1,
+			"calt" 1;
+	}
+
+	/* Mobile tap highlight */
+	/* https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-tap-highlight-color */
+	html {
+		-webkit-tap-highlight-color: rgba(128, 128, 128, 0.5);
+	}
+	::selection {
+		background: #fdffa4;
+		color: black;
+	}
+
+	/* === Scrollbars === */
+
+	::-webkit-scrollbar {
+		@apply w-2;
+		@apply h-2;
+	}
+
+	::-webkit-scrollbar-track {
+		@apply !bg-transparent;
+	}
+	::-webkit-scrollbar-thumb {
+		@apply rounded-card-lg !bg-dark-10;
+	}
+
+	::-webkit-scrollbar-corner {
+		background: rgba(0, 0, 0, 0);
+	}
+
+	/* Firefox */
+	/* https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color#browser_compatibility */
+
+	html {
+		scrollbar-color: var(--bg-muted);
+	}
+
+	.antialised {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+}
+
+@layer utilities {
+	.step {
+		counter-increment: step;
+	}
+
+	.step:before {
+		@apply absolute inline-flex h-9 w-9 items-center justify-center rounded-full border-4 border-background bg-muted text-center -indent-px font-mono text-base font-medium;
+		@apply ml-[-50px] mt-[-4px];
+		content: counter(step);
+	}
+}
+
+@layer components {
+	*:not(body) {
+		outline: none !important;
+		&:focus-visible {
+			@apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+		}
+	}
+
+	.link {
+		@apply inline-flex items-center gap-1 rounded-sm font-medium underline underline-offset-4 hover:text-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	input[type="number"] {
+		-moz-appearance: textfield;
+	}
+}
+
+---
+.\frontend\src\app.d.ts
+---
+/// <reference types="@sveltejs/kit" />
+/// <reference types="vite/client" />
+
+// See https://kit.svelte.dev/docs/types#app
+// for information about these interfaces
+declare global {
+	namespace App {
+		// interface Error {}
+		// interface Locals {}
+		// interface PageData {}
+		// interface PageState {}
+		// interface Platform {}
+	}
+
+	interface ImportMetaEnv {
+		VITE_GOOGLE_CLIENT_ID: string;
+		VITE_GOOGLE_REDIRECT_URI: string;
+		VITE_API_BASE_URL: string;
+	}
+
+	interface ImportMeta {
+		readonly env: ImportMetaEnv;
+	}
+}
+
+export {};
+
+---
+.\frontend\src\app.html
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
+
+
+---
+.\frontend\src\lib\api copy.ts
+---
+// src/lib/api.ts
+const API_BASE_URL = 'http://localhost:8000'; // Update this to your API URL
+
+
+export async function processVideo(youtubeUrl: string, processingMode: string) {
+  const response = await fetch(`${API_BASE_URL}/process_video/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ youtube_url: youtubeUrl, processing_mode: processingMode }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Failed to process video');
+  }
+
+  return await response.json();
+}
+
+export async function getVideoResult(videoId: string) {
+  const response = await fetch(`${API_BASE_URL}/video/${videoId}`);
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to fetch video result for ID: ${videoId}`);
+  }
+
+  return await response.json();
+}
+
+export async function updateVideoSummary(id: string, summary: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/video/${id}/summary`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ summary }),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Failed to update summary');
+  }
+}
+
+export async function updateVideoTranscript(id: string, transcript: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/video/${id}/transcript`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ transcript }),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Failed to update transcript');
+  }
+}
+
+export async function loginWithOAuth(provider: string, code: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/auth/login/oauth/${provider}`, {
+    method: 'POST',
+    body: JSON.stringify({ code }),
+  });
+
+  const data = await response.json();
+  localStorage.setItem('token', data.access_token);
+  return data;
+}
+
+export async function createSubscription(plan: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/billing/create_subscription`, {
+    method: 'POST',
+    body: JSON.stringify({ plan }),
+  });
+
+  return await response.json();
+}
+
+export async function getSubscriptionStatus() {
+  const response = await fetchWithAuth(`${API_BASE_URL}/billing/subscription_status`);
+  return await response.json();
+}
+
+---
+.\frontend\src\lib\api.ts
+---
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
+  const token = localStorage.getItem('token');
+  const headers = {
+    ...options.headers,
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : '',
+  };
+
+  const response = await fetch(url, { ...options, headers });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    console.error('Error response:', errorData);
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+  }
+
+  return response;
+}
+
+export async function processVideo(youtubeUrl: string, processingMode: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/video/process_video/`, {
+    method: 'POST',
+    body: JSON.stringify({ youtube_url: youtubeUrl, processing_mode: processingMode }),
+  });
+
+  return await response.json();
+}
+
+export async function getVideoResult(videoId: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/video/${videoId}`);
+  return await response.json();
+}
+
+export async function updateVideoSummary(id: string, summary: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/video/${id}/summary`, {
+    method: 'PUT',
+    body: JSON.stringify({ summary }),
+  });
+
+  return await response.json();
+}
+
+export async function updateVideoTranscript(id: string, transcript: string) {
+  const response = await fetchWithAuth(`${API_BASE_URL}/video/${id}/transcript`, {
+    method: 'PUT',
+    body: JSON.stringify({ transcript }),
+  });
+
+  return await response.json();
+}
+
+// ... (other API functions remain the same)
+
+---
+.\frontend\src\lib\apiLAST.ts
+---
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
+  const token = localStorage.getItem('token');
+  const headers = {
+    ...options.headers,
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : '',
+  };
+
+  const response = await fetch(url, { ...options, headers });
+
+  if (!response.ok) {
+    let errorMessage;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.detail || `HTTP error! status: ${response.status}`;
+    } catch {
+      errorMessage = `HTTP error! status: ${response.status}`;
+    }
+    throw new Error(errorMessage);
+  }
+
+  return response;
+}
+
+export async function processContent(contentUrl: string, processingType: string, processingMode: string): Promise<ContentResponse> {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/content/process_content/`, {
+      method: 'POST',
+      body: JSON.stringify({
+        content_type: 'youtube',
+        content_id: contentUrl,
+        processing_type: processingType,
+        processing_mode: processingMode,
+      }),
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error processing content:', error);
+    throw error;
+  }
+}
+
+export async function getContentResult(contentId: string): Promise<ContentResponse> {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/content/${contentId}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching content result:', error);
+    throw error;
+  }
+}
+
+export async function updateContent(contentId: string, updateData: Partial<ContentResponse>): Promise<ContentResponse> {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/content/${contentId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updateData),
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating content:', error);
+    throw error;
+  }
+}
+
+export interface ContentResponse {
+  id: number;
+  content_type: string;
+  content_id: string;
+  title: string | null;
+  processed_content: string | null;
+  processing_type: string;
+  processing_mode: string;
+  processing_time: number | null;
+}
+
+---
+.\frontend\src\lib\index.ts
+---
+// place files you want to import through the `$lib` alias in this folder.
+
+
+---
+.\frontend\src\lib\utils.ts
+---
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { cubicOut } from "svelte/easing";
+import type { TransitionConfig } from "svelte/transition";
+
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs));
+}
+
+type FlyAndScaleParams = {
+	y?: number;
+	x?: number;
+	start?: number;
+	duration?: number;
+};
+
+export const flyAndScale = (
+	node: Element,
+	params: FlyAndScaleParams = { y: -8, x: 0, start: 0.95, duration: 150 }
+): TransitionConfig => {
+	const style = getComputedStyle(node);
+	const transform = style.transform === "none" ? "" : style.transform;
+
+	const scaleConversion = (
+		valueA: number,
+		scaleA: [number, number],
+		scaleB: [number, number]
+	) => {
+		const [minA, maxA] = scaleA;
+		const [minB, maxB] = scaleB;
+
+		const percentage = (valueA - minA) / (maxA - minA);
+		const valueB = percentage * (maxB - minB) + minB;
+
+		return valueB;
+	};
+
+	const styleToString = (
+		style: Record<string, number | string | undefined>
+	): string => {
+		return Object.keys(style).reduce((str, key) => {
+			if (style[key] === undefined) return str;
+			return str + `${key}:${style[key]};`;
+		}, "");
+	};
+
+	return {
+		duration: params.duration ?? 200,
+		delay: 0,
+		css: (t) => {
+			const y = scaleConversion(t, [0, 1], [params.y ?? 5, 0]);
+			const x = scaleConversion(t, [0, 1], [params.x ?? 0, 0]);
+			const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
+
+			return styleToString({
+				transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,
+				opacity: t
+			});
+		},
+		easing: cubicOut
+	};
+};
+
+---
+.\frontend\src\lib\components\Linkcard.svelte
+---
+
+
+---
+.\frontend\src\lib\components\TipTapEditor.svelte
+---
+<script lang="ts">
+    import { onMount, onDestroy } from 'svelte';
+    import { Editor } from '@tiptap/core';
+    import Document from '@tiptap/extension-document';
+    import Paragraph from '@tiptap/extension-paragraph';
+    import Text from '@tiptap/extension-text';
+    import HardBreak from '@tiptap/extension-hard-break';
+  
+    export let content = '';
+    export let onUpdate: (newContent: string) => void;
+  
+    let element: HTMLElement;
+    let editor: Editor;
+  
+    onMount(() => {
+      editor = new Editor({
+        element: element,
+        extensions: [
+          Document,
+          Paragraph,
+          Text,
+          HardBreak,
+        ],
+        content: content,
+        editorProps: {
+          attributes: {
+            class: 'prose prose-sm max-w-none focus:outline-none',
+          },
+        },
+        onUpdate: ({ editor }) => {
+          const newContent = editor.getText();
+          onUpdate(newContent);
+        },
+      });
+    });
+  
+    onDestroy(() => {
+      if (editor) {
+        editor.destroy();
+      }
+    });
+  </script>
+  
+  <div bind:this={element} class="border border-gray-300 rounded-md p-2 min-h-[200px]" />
+  
+  <style>
+    :global(.ProseMirror p) {
+      margin: 0;
+    }
+  </style>
+
+---
+.\frontend\src\lib\components\light-switch.svelte
+---
+<script lang="ts">
+	import { Button } from "bits-ui";
+	import { mode, toggleMode } from "mode-watcher";
+	import { scale } from "svelte/transition";
+	import { cubicOut } from "svelte/easing";
+	import { Moon, Sun } from "lucide-svelte";
+</script>
+
+<Button.Root
+	on:click={toggleMode}
+	role="switch"
+	aria-label="Light Switch"
+	aria-checked={$mode === "light"}
+	title="Toggle {$mode === 'dark' ? 'Dark' : 'Light'} Mode"
+	class="relative inline-flex h-10 w-10 items-center justify-center rounded-input px-2 transition-colors hover:bg-dark-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+>
+	{#if $mode === "light"}
+		<div
+			class="absolute inline-flex h-full w-full items-center justify-center"
+			transition:scale={{
+				delay: 50,
+				duration: 200,
+				start: 0.7,
+				easing: cubicOut,
+			}}
+		>
+			<Moon class="size-6" aria-label="Moon" />
+		</div>
+	{:else}
+		<div
+			class="absolute inline-flex h-full w-full items-center justify-center"
+			transition:scale={{
+				delay: 50,
+				duration: 200,
+				start: 0.7,
+				easing: cubicOut,
+			}}
+		>
+			<Sun class="size-6" aria-label="Sun" />
+		</div>
+	{/if}
+</Button.Root>
+
+---
+.\frontend\src\lib\components\mocknav.svelte
+---
+    <!-- Header -->
+    <header class="sticky top-0 z-30 flex h-16 items-center border-b bg-background px-4 sm:px-6">
+        <MainNavbar class="mx-6" />
+        <div class="ml-auto flex items-center space-x-4">
+          <div class="relative">
+            <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input type="search" placeholder="Search transcripts..." class="w-[200px] pl-8 md:w-[300px]" />
+          </div>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild let:builder>
+              <Button variant="ghost" size="icon" class="rounded-full" builders={[builder]}>
+                <User class="h-5 w-5" />
+                <span class="sr-only">User menu</span>
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content align="end">
+              <DropdownMenu.Label>My Account</DropdownMenu.Label>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item>Profile</DropdownMenu.Item>
+              <DropdownMenu.Item>Settings</DropdownMenu.Item>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item>Logout</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+        </div>
+      </header>
+
+
+
+
+
+        <!-- Side Navbar -->
+  <aside class="fixed inset-y-0 left-0 z-20 hidden w-14 flex-col border-r sm:flex">
+    <nav class="flex flex-col items-center gap-4 px-2 py-5">
+      <a href="/" class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
+        <Package2 class="h-4 w-4" />
+        <span class="sr-only">YourApp</span>
+      </a>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild let:builder>
+          <a href="/" class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground" use:builder.action {...builder}>
+            <House class="h-5 w-5" />
+            <span class="sr-only">Dashboard</span>
+          </a>
+        </Tooltip.Trigger>
+        <Tooltip.Content side="right">Dashboard</Tooltip.Content>
+      </Tooltip.Root>
+      <!-- Add more navigation items as needed -->
+    </nav>
+    <nav class="mt-auto flex flex-col items-center gap-4 px-2 py-5">
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild let:builder>
+          <a href="/settings" class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground" use:builder.action {...builder}>
+            <Settings class="h-5 w-5" />
+            <span class="sr-only">Settings</span>
+          </a>
+        </Tooltip.Trigger>
+        <Tooltip.Content side="right">Settings</Tooltip.Content>
+      </Tooltip.Root>
+    </nav>
+  </aside>
+
+---
+.\frontend\src\lib\components\icons\aria.svelte
+---
+<script lang="ts">
+	import type { IconProps } from "./index.js";
+	type $$Props = IconProps;
+</script>
+
+<svg role="img" viewBox="0 0 24 24" fill="currentColor" {...$$restProps}>
+	<path
+		d="M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.884L24 22.624Z"
+	/>
+</svg>
+
+
+---
+.\frontend\src\lib\components\icons\github.svelte
+---
+<script lang="ts">
+	import type { IconProps } from "./index.js";
+	type $$Props = IconProps;
+</script>
+
+<svg viewBox="0 0 438.549 438.549" {...$$restProps}>
+	<path
+		fill="currentColor"
+		d="M409.132 114.573c-19.608-33.596-46.205-60.194-79.798-79.8-33.598-19.607-70.277-29.408-110.063-29.408-39.781 0-76.472 9.804-110.063 29.408-33.596 19.605-60.192 46.204-79.8 79.8C9.803 148.168 0 184.854 0 224.63c0 47.78 13.94 90.745 41.827 128.906 27.884 38.164 63.906 64.572 108.063 79.227 5.14.954 8.945.283 11.419-1.996 2.475-2.282 3.711-5.14 3.711-8.562 0-.571-.049-5.708-.144-15.417a2549.81 2549.81 0 01-.144-25.406l-6.567 1.136c-4.187.767-9.469 1.092-15.846 1-6.374-.089-12.991-.757-19.842-1.999-6.854-1.231-13.229-4.086-19.13-8.559-5.898-4.473-10.085-10.328-12.56-17.556l-2.855-6.57c-1.903-4.374-4.899-9.233-8.992-14.559-4.093-5.331-8.232-8.945-12.419-10.848l-1.999-1.431c-1.332-.951-2.568-2.098-3.711-3.429-1.142-1.331-1.997-2.663-2.568-3.997-.572-1.335-.098-2.43 1.427-3.289 1.525-.859 4.281-1.276 8.28-1.276l5.708.853c3.807.763 8.516 3.042 14.133 6.851 5.614 3.806 10.229 8.754 13.846 14.842 4.38 7.806 9.657 13.754 15.846 17.847 6.184 4.093 12.419 6.136 18.699 6.136 6.28 0 11.704-.476 16.274-1.423 4.565-.952 8.848-2.383 12.847-4.285 1.713-12.758 6.377-22.559 13.988-29.41-10.848-1.14-20.601-2.857-29.264-5.14-8.658-2.286-17.605-5.996-26.835-11.14-9.235-5.137-16.896-11.516-22.985-19.126-6.09-7.614-11.088-17.61-14.987-29.979-3.901-12.374-5.852-26.648-5.852-42.826 0-23.035 7.52-42.637 22.557-58.817-7.044-17.318-6.379-36.732 1.997-58.24 5.52-1.715 13.706-.428 24.554 3.853 10.85 4.283 18.794 7.952 23.84 10.994 5.046 3.041 9.089 5.618 12.135 7.708 17.705-4.947 35.976-7.421 54.818-7.421s37.117 2.474 54.823 7.421l10.849-6.849c7.419-4.57 16.18-8.758 26.262-12.565 10.088-3.805 17.802-4.853 23.134-3.138 8.562 21.509 9.325 40.922 2.279 58.24 15.036 16.18 22.559 35.787 22.559 58.817 0 16.178-1.958 30.497-5.853 42.966-3.9 12.471-8.941 22.457-15.125 29.979-6.191 7.521-13.901 13.85-23.131 18.986-9.232 5.14-18.182 8.85-26.84 11.136-8.662 2.286-18.415 4.004-29.263 5.146 9.894 8.562 14.842 22.077 14.842 40.539v60.237c0 3.422 1.19 6.279 3.572 8.562 2.379 2.279 6.136 2.95 11.276 1.995 44.163-14.653 80.185-41.062 108.068-79.226 27.88-38.161 41.825-81.126 41.825-128.906-.01-39.771-9.818-76.454-29.414-110.049z"
+	/>
+</svg>
+
+
+---
+.\frontend\src\lib\components\icons\index.ts
+---
+import type { HTMLAttributes } from "svelte/elements";
+
+export { default as GitHub } from "./github.svelte";
+export { default as Xcom } from "./x-com.svelte";
+export { default as Tailwind } from "./tailwind.svelte";
+export { default as Aria } from "./aria.svelte";
+export { default as Npm } from "./npm.svelte";
+export { default as Pnpm } from "./pnpm.svelte";
+export { default as Yarn } from "./yarn.svelte";
+export { default as SwitchOn } from "./switch-on.svelte";
+export { default as SwitchOff } from "./switch-off.svelte";
+export { default as Logo } from "./logo.svelte";
+
+export type IconProps = Partial<HTMLAttributes<SVGElement>> & {
+	class?: string;
+};
+
+
+---
+.\frontend\src\lib\components\icons\logo.svelte
+---
+<svg
+	width="94"
+	height="22"
+	viewBox="0 0 94 22"
+	fill="none"
+	xmlns="http://www.w3.org/2000/svg"
+	{...$$restProps}
+>
+	<path
+		d="M58.0197 19.3381C55.7317 19.3381 53.8857 18.5581 52.4037 16.9721L54.7697 14.8141C55.7577 15.9321 56.7977 16.4781 57.9417 16.4781C59.1377 16.4781 59.8137 15.8801 59.8137 15.0741C59.8137 14.3721 59.4757 13.9821 57.3437 13.4881C53.7297 12.6301 53.1837 10.9921 53.1837 9.27609C53.1837 6.91009 55.0557 5.14209 58.2277 5.14209C60.4117 5.14209 61.8677 5.68809 63.2457 7.48209L60.6977 9.43209C60.0477 8.39209 59.2157 7.97609 58.3057 7.97609C57.3437 7.97609 56.6157 8.34009 56.6157 9.17209C56.6157 9.64009 56.8237 10.0561 58.4357 10.4721C62.3617 11.4861 63.2717 12.9421 63.2717 14.9701C63.2717 17.4661 61.0097 19.3381 58.0197 19.3381Z"
+		fill="currentColor"
+	/>
+	<path
+		d="M49.3294 19C46.6514 19 45.1954 17.752 45.1954 14.814V8.46999H43.2974V5.47999H45.1954V2.74999L48.7054 2.38599V5.47999H51.5654V8.46999H48.7054V14.632C48.7054 15.49 49.1214 15.88 49.7974 15.88H51.2534V19H49.3294Z"
+		fill="currentColor"
+	/>
+	<path
+		d="M37.8415 19V5.48003H41.3515V19H37.8415ZM37.4775 2.28203C37.4775 1.16403 38.3875 0.228027 39.5835 0.228027C40.8055 0.228027 41.6895 1.16403 41.6895 2.28203C41.6895 3.45203 40.8055 4.36203 39.5835 4.36203C38.3875 4.36203 37.4775 3.42603 37.4775 2.28203Z"
+		fill="currentColor"
+	/>
+	<path
+		d="M28.814 19.338C26.396 19.338 25.174 18.324 24.446 16.79V19H21.04V0.0200195H24.55V7.56002C25.278 6.13002 26.5 5.19402 28.814 5.19402C32.532 5.19402 35.496 8.39202 35.496 12.292C35.496 16.192 32.532 19.338 28.814 19.338ZM24.446 12.292C24.446 14.398 25.928 16.166 28.242 16.166C30.478 16.166 31.986 14.32 31.986 12.266C31.986 10.16 30.478 8.36602 28.242 8.36602C25.928 8.36602 24.446 10.186 24.446 12.292Z"
+		fill="currentColor"
+	/>
+	<circle
+		cx="5.93555"
+		cy="10.9873"
+		r="4.3"
+		transform="rotate(90 5.93555 10.9873)"
+		fill="currentColor"
+	/>
+	<g>
+		<path
+			d="M81,20.4h-7c-2.9,0-5.2-2.4-5.2-5.2v-7c0-2.9,2.4-5.2,5.2-5.2h7c2.9,0,5.2,2.4,5.2,5.2v7C86.2,18,83.9,20.4,81,20.4z M74,4
+			c-2.3,0-4.2,1.9-4.2,4.2v7c0,2.3,1.9,4.2,4.2,4.2h7c2.3,0,4.2-1.9,4.2-4.2v-7C85.1,5.8,83.3,4,81,4H74z"
+			fill="currentColor"
+		/>
+	</g>
+	<g>
+		<path
+			d="M77.8,8.1h1.1v4.8c0,0.5-0.1,1-0.4,1.4c-0.2,0.4-0.6,0.7-1,0.9c-0.4,0.2-0.9,0.3-1.5,0.3c-0.6,0-1.1-0.1-1.5-0.3
+			c-0.4-0.2-0.8-0.5-1-0.9c-0.2-0.4-0.4-0.8-0.4-1.4V8.1h1.1v4.7c0,0.3,0.1,0.6,0.2,0.9c0.1,0.3,0.4,0.5,0.6,0.6
+			c0.3,0.1,0.6,0.2,1,0.2c0.4,0,0.7-0.1,1-0.2c0.3-0.1,0.5-0.4,0.6-0.6c0.1-0.3,0.2-0.6,0.2-0.9V8.1z M81.7,8.1v7.3h-1.1V8.1H81.7z"
+			fill="currentColor"
+		/>
+	</g>
+</svg>
+
+
+---
+.\frontend\src\lib\components\icons\npm.svelte
+---
+<script lang="ts">
+	import type { IconProps } from "./index.js";
+
+	type $$Props = IconProps;
+</script>
+
+<svg viewBox="0 0 24 24" {...$$restProps}>
+	<path
+		d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"
+		fill="currentColor"
+	/>
+</svg>
+
+
+---
+.\frontend\src\lib\components\icons\pnpm.svelte
+---
+<script lang="ts">
+	import type { IconProps } from "./index.js";
+	type $$Props = IconProps;
+</script>
+
+<svg viewBox="0 0 24 24" {...$$restProps}>
+	<path
+		d="M0 0v7.5h7.5V0zm8.25 0v7.5h7.498V0zm8.25 0v7.5H24V0zM8.25 8.25v7.5h7.498v-7.5zm8.25 0v7.5H24v-7.5zM0 16.5V24h7.5v-7.5zm8.25 0V24h7.498v-7.5zm8.25 0V24H24v-7.5z"
+		fill="currentColor"
+	/>
+</svg>
+
+
+---
+.\frontend\src\lib\components\icons\switch-off.svelte
+---
+<div
+	class="peer inline-flex h-[15.6px] w-[26px] shrink-0 items-center rounded-full bg-dark-10 px-[3px] shadow-mini-inset transition-colors"
+>
+	<span
+		class="pointer-events-none block size-[13px] shrink-0 translate-x-0 rounded-full bg-background shadow-mini transition-transform dark:border dark:border-border-input dark:shadow-mini"
+	></span>
+</div>
+
+
+---
+.\frontend\src\lib\components\icons\switch-on.svelte
+---
+<div
+	class="peer inline-flex h-[15.6px] min-h-[15.6px] w-[26px] shrink-0 items-center rounded-full bg-dark-10 bg-foreground px-[1.5px]"
+>
+	<span
+		class="pointer-events-none block size-[13px] shrink-0 translate-x-[10px] rounded-full bg-background dark:border-border-input dark:shadow-mini"
+	></span>
+</div>
+
+
+---
+.\frontend\src\lib\components\icons\tailwind.svelte
+---
+<script lang="ts">
+	import type { IconProps } from "./index.js";
+	type $$Props = IconProps;
+</script>
+
+<svg viewBox="0 0 24 24" {...$$restProps}>
+	<path
+		d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"
+		fill="currentColor"
+	/>
+</svg>
+
+
+---
+.\frontend\src\lib\components\icons\x-com.svelte
+---
+<script lang="ts">
+	import type { IconProps } from "./index.js";
+	type $$Props = IconProps;
+</script>
+
+<svg
+	aria-label="X formerly known as Twitter"
+	fill="currentColor"
+	viewBox="0 0 22 20"
+	{...$$restProps}
+	><path
+		d="M16.99 0H20.298L13.071 8.26L21.573 19.5H14.916L9.702 12.683L3.736 19.5H0.426L8.156 10.665L0 0H6.826L11.539 6.231L16.99 0ZM15.829 17.52H17.662L5.83 1.876H3.863L15.829 17.52Z"
+	/></svg
+>
+
+
+---
+.\frontend\src\lib\components\icons\yarn.svelte
+---
+<script lang="ts">
+	import type { IconProps } from "./index.js";
+	type $$Props = IconProps;
+</script>
+
+<svg viewBox="0 0 24 24" {...$$restProps}>
+	<path
+		d="M12 0C5.375 0 0 5.375 0 12s5.375 12 12 12 12-5.375 12-12S18.625 0 12 0zm.768 4.105c.183 0 .363.053.525.157.125.083.287.185.755 1.154.31-.088.468-.042.551-.019.204.056.366.19.463.375.477.917.542 2.553.334 3.605-.241 1.232-.755 2.029-1.131 2.576.324.329.778.899 1.117 1.825.278.774.31 1.478.273 2.015a5.51 5.51 0 0 0 .602-.329c.593-.366 1.487-.917 2.553-.931.714-.009 1.269.445 1.353 1.103a1.23 1.23 0 0 1-.945 1.362c-.649.158-.95.278-1.821.843-1.232.797-2.539 1.242-3.012 1.39a1.686 1.686 0 0 1-.704.343c-.737.181-3.266.315-3.466.315h-.046c-.783 0-1.214-.241-1.45-.491-.658.329-1.51.19-2.122-.134a1.078 1.078 0 0 1-.58-1.153 1.243 1.243 0 0 1-.153-.195c-.162-.25-.528-.936-.454-1.946.056-.723.556-1.367.88-1.71a5.522 5.522 0 0 1 .408-2.256c.306-.727.885-1.348 1.32-1.737-.32-.537-.644-1.367-.329-2.21.227-.602.412-.936.82-1.08h-.005c.199-.074.389-.153.486-.259a3.418 3.418 0 0 1 2.298-1.103c.037-.093.079-.185.125-.283.31-.658.639-1.029 1.024-1.168a.94.94 0 0 1 .328-.06zm.006.7c-.507.016-1.001 1.519-1.001 1.519s-1.27-.204-2.266.871c-.199.218-.468.334-.746.44-.079.028-.176.023-.417.672-.371.991.625 2.094.625 2.094s-1.186.839-1.626 1.881c-.486 1.144-.338 2.261-.338 2.261s-.843.732-.899 1.487c-.051.663.139 1.2.343 1.515.227.343.51.176.51.176s-.561.653-.037.931c.477.25 1.283.394 1.71-.037.31-.31.371-1.001.486-1.283.028-.065.12.111.209.199.097.093.264.195.264.195s-.755.324-.445 1.066c.102.246.468.403 1.066.398.222-.005 2.664-.139 3.313-.296.375-.088.505-.283.505-.283s1.566-.431 2.998-1.357c.917-.598 1.293-.76 2.034-.936.612-.148.57-1.098-.241-1.084-.839.009-1.575.44-2.196.825-1.163.718-1.742.672-1.742.672l-.018-.032c-.079-.13.371-1.293-.134-2.678-.547-1.515-1.413-1.881-1.344-1.997.297-.5 1.038-1.297 1.334-2.78.176-.899.13-2.377-.269-3.151-.074-.144-.732.241-.732.241s-.616-1.371-.788-1.483a.271.271 0 0 0-.157-.046z"
+		fill="currentColor"
+	/>
+</svg>
+
+
+---
+.\frontend\src\lib\components\layout\Footer.svelte
+---
+
+
+---
+.\frontend\src\lib\components\layout\Hero.svelte
+---
+<!-- home page -->
+
+<script lang="ts">
+  import { Button } from "$lib/components/ui/button";
+  import { Input } from "$lib/components/ui/input";
+  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "$lib/components/ui/select";
+  import { processContent } from "$lib/apiLAST";
+  import { Search } from "lucide-svelte";
+  
+  let youtubeUrl = "";
+  let processingMode = "simple";
+  let error = "";
+  let loading = false;
+  
+  async function handleSubmit() {
+    if (!youtubeUrl) {
+      error = "Please enter a YouTube URL";
+      return;
+    }
+    
+    loading = true;
+    error = "";
+    
+    try {
+      const result = await processContent(youtubeUrl, processingMode);
+      window.location.href = `/result/${result.content_id}`;
+    } catch (err: any) {
+      error = err.message || "An error occurred while processing the content";
+    } finally {
+      loading = false;
+    }
+  }
+</script>
+
+<svelte:head>
+<title>Stepify YouTube videos for the sake of your time</title>
+</svelte:head>
+
+<div class="container relative">
+<section class="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20">
+  <h1 class="text-center text-7xl font-bold leading-tight tracking-tighter md:text-6xl lg:leading-[1.1]">Stepify YouTube videos <br>for the sake of your time</h1>
+  <p class="max-w-[750px] text-center text-lg sm:text-xl text-balance text-muted-foreground">
+    No time for YouTube videos? Get a step-by-step tutorial of any video to follow along. Pure transcript. Powered by AI.
+  </p>
+
+  <div class="relative w-full max-w-[600px] mt-8">
+    {#if error}
+      <div class="bg-destructive/15 text-destructive px-4 py-3 rounded-md mb-4" role="alert">
+        <span class="block sm:inline">{error}</span>
+      </div>
+    {/if}
+    
+    <form on:submit|preventDefault={handleSubmit} class="flex items-center space-x-2">
+      <div class="relative flex-grow">
+        <Input 
+          type="url" 
+          bind:value={youtubeUrl} 
+          placeholder="Enter YouTube URL" 
+          required
+          class="pr-24" 
+        />
+        <div class="absolute right-2 top-1/2 -translate-y-1/2">
+          <Select bind:value={processingMode}>
+            <SelectTrigger class="h-8 w-20">
+              <SelectValue placeholder="Mode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="simple">Simple</SelectItem>
+              <SelectItem value="detailed">Detailed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <Button type="submit" disabled={loading} class="h-10 px-4">
+        {#if loading}
+          <span class="loading loading-spinner loading-sm"></span>
+        {:else}
+          <Search class="h-4 w-4" />
+        {/if}
+      </Button>
+    </form>
+  </div>
+
+  <div class="flex w-full items-center justify-center space-x-4 py-4 md:pb-10">
+    <a href="/docs" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+      Stepified videos
+    </a>
+    <a href="https://github.com/yourusername/your-repo" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+      Search database
+    </a>
+  </div>
+</section>
+</div>
+
+---
+.\frontend\src\lib\components\layout\Navbar.svelte
+---
+<script lang="ts">
+	import { Button } from "bits-ui";
+    import MobileNav from "../navigation/mobile-nav.svelte"
+    import LightSwitch  from "../light-switch.svelte";
+
+
+</script>
+
+<header
+	class="sticky top-0 z-50 overflow-x-hidden border-b border-border bg-background/75 backdrop-blur-md"
+>
+	<div class="container px-4">
+		<div class="flex h-[70px] items-center justify-between gap-3">
+			<div class="flex items-center gap-1.5">
+				<MobileNav />
+				<a
+					href="/"
+					class="ml-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+				>
+                <h1 class="text-center text-4xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">stepify.tech</h1>
+            </a>
+			</div>
+			<div class="flex items-center justify-end gap-2.5">
+				<Button.Root
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex h-10 items-center
+					justify-center whitespace-nowrap rounded-[9px] bg-muted px-4
+					text-sm font-semibold text-foreground ring-offset-background transition-colors hover:bg-dark-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+				>
+					Report an issue
+				</Button.Root>
+				<LightSwitch />
+			</div>
+		</div>
+	</div>
+</header>
+
+---
+.\frontend\src\lib\components\markdown\a.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+	export let href: string;
+	$: internal = href.startsWith("/") || href.startsWith("#");
+
+	$: rel = !internal ? "noopener noreferrer" : undefined;
+	$: target = !internal ? "_blank" : undefined;
+</script>
+
+<a {href} {target} {rel} class={cn("link", className)} {...$$restProps}>
+	<slot />
+</a>
+
+
+---
+.\frontend\src\lib\components\markdown\blockquote.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<blockquote class={cn("mt-6 border-l-2 pl-6 italic", className)} {...$$restProps}>
+	<slot />
+</blockquote>
+
+
+---
+.\frontend\src\lib\components\markdown\blueprint.svelte
+---
+<script context="module">
+	export {
+		a,
+		blockquote,
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		hr,
+		img,
+		li,
+		ol,
+		p,
+		pre,
+		table,
+		td,
+		th,
+		tr,
+		ul,
+	} from "$lib/components/markdown/index.js";
+</script>
+
+<script lang="ts">
+	export let title = "";
+	export let description = "";
+</script>
+
+<slot {title} {description} />
+
+
+---
+.\frontend\src\lib\components\markdown\code.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<code
+	class={cn(
+		"relative inline-flex h-[27px] items-center justify-center rounded-button bg-muted px-[8px] font-mono text-xs font-medium tracking-tighter text-foreground/60 sm:text-sm",
+		className,
+		"custom"
+	)}
+>
+	<slot />
+</code>
+
+
+---
+.\frontend\src\lib\components\markdown\h1.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<h1 class={cn("mt-2 scroll-m-20 text-4xl font-bold", className)} {...$$restProps}>
+	<slot />
+</h1>
+
+
+---
+.\frontend\src\lib\components\markdown\h2.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<h2
+	class={cn(
+		"mt-12 -scroll-m-36 text-[27px] font-semibold tracking-[-0.01em] first:mt-0",
+		className
+	)}
+	{...$$restProps}
+>
+	<slot />
+</h2>
+
+
+---
+.\frontend\src\lib\components\markdown\h3.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<h3 class={cn("mt-8 scroll-m-20 text-xl font-semibold tracking-tight", className)} {...$$restProps}>
+	<slot />
+</h3>
+
+
+---
+.\frontend\src\lib\components\markdown\h4.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<h4 class={cn("mt-8 scroll-m-20 text-lg font-semibold tracking-tight", className)} {...$$restProps}>
+	<slot />
+</h4>
+
+
+---
+.\frontend\src\lib\components\markdown\h5.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<h5 class={cn("mt-8 scroll-m-20 text-lg font-semibold tracking-tight", className)} {...$$restProps}>
+	<slot />
+</h5>
+
+
+---
+.\frontend\src\lib\components\markdown\h6.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<h6
+	class={cn("mt-8 scroll-m-20 text-base font-semibold tracking-tight", className)}
+	{...$$restProps}
+>
+	<slot />
+</h6>
+
+
+---
+.\frontend\src\lib\components\markdown\hr.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<hr class={cn("my-4 md:my-8", className)} {...$$restProps} />
+
+
+---
+.\frontend\src\lib\components\markdown\img.svelte
+---
+<script lang="ts">
+	import type { HTMLImgAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+	export let src: HTMLImgAttributes["src"] = undefined;
+	export let alt: HTMLImgAttributes["alt"] = undefined;
+</script>
+
+<img {src} {alt} class={cn("rounded-md", className)} {...$$restProps} />
+
+
+---
+.\frontend\src\lib\components\markdown\index.ts
+---
+export { default as a } from "./a.svelte";
+export { default as blockquote } from "./blockquote.svelte";
+export { default as h1 } from "./h1.svelte";
+export { default as h2 } from "./h2.svelte";
+export { default as h3 } from "./h3.svelte";
+export { default as h4 } from "./h4.svelte";
+export { default as h5 } from "./h5.svelte";
+export { default as h6 } from "./h6.svelte";
+export { default as hr } from "./hr.svelte";
+export { default as img } from "./img.svelte";
+export { default as li } from "./li.svelte";
+export { default as ol } from "./ol.svelte";
+export { default as p } from "./p.svelte";
+export { default as pre } from "./pre.svelte";
+export { default as table } from "./table.svelte";
+export { default as td } from "./td.svelte";
+export { default as th } from "./th.svelte";
+export { default as tr } from "./tr.svelte";
+export { default as ul } from "./ul.svelte";
+
+
+---
+.\frontend\src\lib\components\markdown\li.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<li class={cn("mt-2", className)} {...$$restProps}>
+	<slot />
+</li>
+
+
+---
+.\frontend\src\lib\components\markdown\ol.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<ol class={cn("my-6 ml-6 list-decimal", className)} {...$$restProps}>
+	<slot />
+</ol>
+
+
+---
+.\frontend\src\lib\components\markdown\p.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<p class={cn("leading-7 [&:not(:first-child)]:mt-6", className)} {...$$restProps}>
+	<slot />
+</p>
+
+
+---
+.\frontend\src\lib\components\markdown\pre.svelte
+---
+<script lang="ts">
+	import { CopyCodeButton } from "$lib/components/index.js";
+	import { cn, createCopyCodeButton } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+
+	const { copyCode, copied, setCodeString } = createCopyCodeButton();
+</script>
+
+<pre
+	class={cn(
+		"relative mb-4 mt-6 overflow-x-auto rounded-card border-2 border-muted py-8",
+		className
+	)}
+	use:setCodeString
+	{...$$restProps}>
+	<slot />
+	<CopyCodeButton {copyCode} copied={$copied} class={cn("pre-copy-btn absolute right-4 top-4")} />
+</pre>
+
+
+---
+.\frontend\src\lib\components\markdown\table.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<div class="my-6 w-full overflow-y-auto">
+	<table class={cn("w-full", className)} {...$$restProps}>
+		<slot />
+	</table>
+</div>
+
+
+---
+.\frontend\src\lib\components\markdown\td.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<td
+	class={cn(
+		"border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
+		className
+	)}
+	{...$$restProps}
+>
+	<slot />
+</td>
+
+
+---
+.\frontend\src\lib\components\markdown\th.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<th
+	class={cn(
+		"border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
+		className
+	)}
+	{...$$restProps}
+>
+	<slot />
+</th>
+
+
+---
+.\frontend\src\lib\components\markdown\tr.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<tr class={cn("m-0 border-t p-0 even:bg-muted", className)} {...$$restProps}>
+	<slot />
+</tr>
+
+
+---
+.\frontend\src\lib\components\markdown\ul.svelte
+---
+<script lang="ts">
+	import { cn } from "$lib/utils/index.js";
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<ul class={cn("my-6 ml-6 list-disc", className)} {...$$restProps}>
+	<slot />
+</ul>
+
+
+---
+.\frontend\src\lib\components\navigation\index.ts
+---
+export { default as SidebarNav } from "./sidebar-nav.svelte";
+export { default as SidebarNavItems } from "./sidebar-nav-items.svelte";
+export { default as MobileNav } from "./mobile-nav.svelte";
+export { default as SidebarNavMainItems } from "./sidebar-nav-main-items.svelte";
+
+
+---
+.\frontend\src\lib\components\navigation\main-nav.svelte
+---
+<script lang="ts">
+	import { Button } from "bits-ui";
+    import MobileNav from "../navigation/mobile-nav.svelte"
+    import LightSwitch  from "../light-switch.svelte";
+
+
+</script>
+
+<header
+	class="sticky top-0 z-50 overflow-x-hidden border-b border-border bg-background/75 backdrop-blur-md"
+>
+	<div class="container px-4">
+		<div class="flex h-[70px] items-center justify-between gap-3">
+			<div class="flex items-center gap-1.5">
+				<!-- <MobileNav /> -->
+				<a
+					href="/"
+					class="ml-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+				>
+                <h1 class="text-center text-4xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">stepify.tech</h1>
+            </a>
+			</div>
+			<div class="flex items-center justify-end gap-2.5">
+				<Button.Root
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex h-10 items-center
+					justify-center whitespace-nowrap rounded-[9px] bg-muted px-4
+					text-sm font-semibold text-foreground ring-offset-background transition-colors hover:bg-dark-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+				>
+					Report an issue
+				</Button.Root>
+				<LightSwitch />
+			</div>
+		</div>
+	</div>
+</header>
+
+---
+.\frontend\src\lib\components\navigation\mobile-link.svelte
+---
+<script lang="ts">
+	import { page } from "$app/stores";
+	import { cn } from "$lib/utils/index.js";
+
+	export let href: string;
+	export let open: boolean;
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
+</script>
+
+<a
+	{href}
+	on:click={() => (open = false)}
+	class={cn($page.url.pathname === href ? "text-foreground" : "text-foreground/60", className)}
+	{...$$restProps}
+>
+	<slot />
+</a>
+
+
+---
+.\frontend\src\lib\components\navigation\mobile-nav.svelte
+---
+<script lang="ts">
+	import MobileLink from "./mobile-link.svelte";
+	import { Logo } from "$lib/components/icons/index.js";
+	import { Square } from "lucide-svelte"
+	import { Button } from "$lib/components/ui/button/index.js";
+	import * as Sheet from "$lib/components/ui/sheet/index.js";
+	import { navigation } from "$lib/config/index.js";
+
+	let open = false;
+</script>
+
+<Sheet.Root bind:open>
+	<Sheet.Trigger asChild let:builder>
+		<Button
+			builders={[builder]}
+			variant="ghost"
+			class="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+		>
+			<Square class="h-5 w-5" />
+			<span class="sr-only">Toggle Menu</span>
+		</Button>
+	</Sheet.Trigger>
+	<Sheet.Content side="left" class="pr-0">
+		<MobileLink href="/" class="flex items-center" {open}>
+			<Logo />
+		</MobileLink>
+		<div class="my-4 h-[calc(100vh-8rem)] overflow-auto pb-10 pl-6">
+			<div class="flex flex-col space-y-2">
+				{#each navigation.sidebar as navItem, index (index)}
+					<div class="flex flex-col space-y-3 pt-6">
+						<h4 class="font-medium">{navItem.title}</h4>
+						{#if navItem?.items?.length}
+							{#each navItem.items as item}
+								{#if !item.disabled && item.href}
+									<MobileLink href={item.href} bind:open>
+										{item.title}
+									</MobileLink>
+								{/if}
+							{/each}
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+	</Sheet.Content>
+</Sheet.Root>
+
+
+---
+.\frontend\src\lib\components\navigation\sidebar-nav-items.svelte
+---
+<script lang="ts">
+	import { page } from "$app/stores";
+	import type { SidebarNavItem } from "$lib/config/index.js";
+	import { cn } from "$lib/utils/index.js";
+
+	export let items: SidebarNavItem[] = [];
+</script>
+
+{#if items.length}
+	<div class="grid grid-flow-row auto-rows-max gap-0.5 pl-4 text-sm">
+		{#each items as item, index (index)}
+			{#if item.href}
+				<a
+					href={item.href}
+					class={cn(
+						"group inline-flex w-full items-center rounded-md px-2.5 py-1.5 text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+						item.disabled && "cursor-not-allowed opacity-60 ",
+						$page.url.pathname === item.href ? "bg-muted" : "hover:bg-muted/50"
+					)}
+					target={item.external ? "_blank" : ""}
+					rel={item.external ? "noreferrer" : ""}
+				>
+					{item.title}
+					{#if item.label}
+						<span
+							class="ml-2 rounded-[4px] bg-[#FCDAFE] px-1.5 py-1 text-[0.7rem] font-semibold leading-none text-[#2A266B] no-underline group-hover:no-underline"
+						>
+							{item.label}
+						</span>
+					{/if}
+				</a>
+			{:else}
+				<span
+					class="flex w-full cursor-not-allowed items-center rounded-md px-2.5 py-1.5 text-sm text-muted-foreground hover:underline"
+				>
+					{item.title}
+				</span>
+			{/if}
+		{/each}
+	</div>
+{/if}
+
+
+---
+.\frontend\src\lib\components\navigation\sidebar-nav-main-items.svelte
+---
+<script lang="ts">
+	import { page } from "$app/stores";
+	import { CodeBlock, Compass, Palette, Sticker } from "$icons/index.js";
+	import type { SidebarNavItem } from "$lib/config/index.js";
+	import { cn } from "$lib/utils/index.js";
+
+	export let items: SidebarNavItem[] = [];
+
+	const iconMap = {
+		Introduction: Sticker,
+		"Getting Started": Compass,
+		Delegation: CodeBlock,
+		Styling: Palette,
+	} as const;
+
+	const iconMapKeys = Object.keys(iconMap) as (keyof typeof iconMap)[];
+
+	function isIconMapKey(key: string): key is keyof typeof iconMap {
+		return iconMapKeys.includes(key as keyof typeof iconMap);
+	}
+</script>
+
+{#if items.length}
+	<div class="grid grid-flow-row auto-rows-max gap-0.5 pb-8 pl-4 text-sm">
+		{#each items as item, index (index)}
+			{#if item.href}
+				<a
+					href={item.href}
+					class={cn(
+						"group flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm font-semibold text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+						$page.url.pathname === item.href
+							? "bg-muted"
+							: "bg-transparent hover:bg-muted/50"
+					)}
+					target={item.external ? "_blank" : ""}
+					rel={item.external ? "noreferrer" : ""}
+				>
+					{#if isIconMapKey(item.title)}
+						<svelte:component this={iconMap[item.title]} size={22} />
+					{/if}
+					{item.title}
+					{#if item.label}
+						<span
+							class="ml-2 rounded-[4px] bg-[#FCDAFE] px-1.5 py-1 text-xs font-semibold leading-none text-[#2A266B] no-underline group-hover:no-underline"
+						>
+							{item.label}
+						</span>
+					{/if}
+				</a>
+			{/if}
+		{/each}
+	</div>
+{/if}
+
+
+---
+.\frontend\src\lib\components\navigation\sidebar-nav.svelte
+---
+<script lang="ts">
+	import { SidebarNavItems, SidebarNavMainItems } from "$lib/components/index.js";
+	import type { SidebarNavItem } from "$lib/config/index.js";
+	export let items: SidebarNavItem[] = [];
+</script>
+
+{#if items.length}
+	<aside
+		class="fixed top-10 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r border-border md:sticky md:block"
+	>
+		<div class="h-full py-6 pr-4 lg:py-8">
+			<nav class="space-y-3">
+				<div class="flex w-full flex-col pb-[50px]">
+					{#each items as item, index (index)}
+						{#if item.title === "Overview"}
+							<SidebarNavMainItems items={item.items} />
+						{:else}
+							<div class="pb-4">
+								<h4
+									class="mb-1 ml-[9px] rounded-md px-2.5 py-2 pl-4 text-xs font-medium uppercase text-muted-foreground"
+								>
+									{item.title}
+								</h4>
+								{#if item.items}
+									<SidebarNavItems items={item.items} />
+								{/if}
+							</div>
+						{/if}
+					{/each}
+				</div>
+			</nav>
+		</div>
+	</aside>
+{/if}
+
+
+---
+.\frontend\src\lib\components\toc\index.ts
+---
+export { default as TableOfContents } from "./table-of-contents.svelte";
+
+
+---
+.\frontend\src\lib\components\toc\table-of-contents.svelte
+---
+<script lang="ts">
+	import { createTableOfContents } from "@melt-ui/svelte";
+	import Tree from "./tree.svelte";
+
+	export let selector = "#content";
+
+	const {
+		elements: { item },
+		states: { headingsTree, activeHeadingIdxs },
+		helpers: { isActive },
+	} = createTableOfContents({
+		selector,
+		exclude: ["h1", "h4", "h5", "h6"],
+		activeType: "all",
+		scrollOffset: 80,
+	});
+</script>
+
+<div class="mt-1 overflow-y-auto rounded-lg p-4">
+	<nav>
+		{#key $headingsTree}
+			<Tree tree={$headingsTree} activeHeadingIdxs={$activeHeadingIdxs} {item} {isActive} />
+		{/key}
+	</nav>
+</div>
+
+
+---
+.\frontend\src\lib\components\toc\tree.svelte
+---
+<script lang="ts">
+	import {
+		type TableOfContents,
+		type TableOfContentsElements,
+		type TableOfContentsItem,
+		melt,
+	} from "@melt-ui/svelte";
+	import { cn } from "$lib/utils/index.js";
+
+	export let tree: TableOfContentsItem[] = [];
+	export let activeHeadingIdxs: number[];
+	export let item: TableOfContentsElements["item"];
+	export let level = 1;
+	export let isActive: TableOfContents["helpers"]["isActive"];
+
+	function hoverAction(node: HTMLElement) {
+		function handleMouseEnter() {
+			node.parentElement?.setAttribute("data-hover", "");
+		}
+
+		function handleMouseLeave() {
+			node.parentElement?.removeAttribute("data-hover");
+		}
+
+		node.addEventListener("mouseenter", handleMouseEnter);
+		node.addEventListener("mouseleave", handleMouseLeave);
+
+		return {
+			destroy() {
+				node.removeEventListener("mouseenter", handleMouseEnter);
+				node.removeEventListener("mouseleave", handleMouseLeave);
+			},
+		};
+	}
+</script>
+
+<ul class="m-0 list-none">
+	{#if tree && tree.length}
+		{#each tree as heading, i (i)}
+			{@const node = heading.node.innerHTML}
+			{@const nodeWithoutSpan = node.replace(/<span.*<\/span>/g, "")}
+			<li class="mt-0 {level === 1 && 'border-l'}">
+				<div
+					class={cn(
+						"-mx-[1px] inline-flex items-center justify-center gap-1 border-l border-l-transparent pb-2 pl-4 text-muted-foreground no-underline transition-colors data-[hover]:border-l-foreground",
+						level !== 1 ? "pl-8" : "",
+						$isActive(heading.id) && "border-l-foreground"
+					)}
+				>
+					<a
+						href="#{heading.id}"
+						use:melt={$item(heading.id)}
+						use:hoverAction
+						class="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[active]:text-foreground"
+					>
+						<!--  eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html nodeWithoutSpan}
+					</a>
+				</div>
+
+				{#if heading.children && heading.children.length}
+					<svelte:self
+						tree={heading.children}
+						level={level + 1}
+						{activeHeadingIdxs}
+						{isActive}
+						{item}
+					/>
+				{/if}
+			</li>
+		{/each}
+	{/if}
+</ul>
+
+
+---
+.\frontend\src\lib\components\ui\accordion\accordion-content.svelte
+---
+<script lang="ts">
+	import { Accordion as AccordionPrimitive } from "bits-ui";
+	import { slide } from "svelte/transition";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = AccordionPrimitive.ContentProps;
+
+	let className: $$Props["class"] = undefined;
+	export let transition: $$Props["transition"] = slide;
+	export let transitionConfig: $$Props["transitionConfig"] = {
+		duration: 200,
+	};
+	export { className as class };
+</script>
+
+<AccordionPrimitive.Content
+	class={cn("overflow-hidden text-sm transition-all", className)}
+	{transition}
+	{transitionConfig}
+	{...$$restProps}
+>
+	<div class="pb-4 pt-0">
+		<slot />
+	</div>
+</AccordionPrimitive.Content>
+
+
+---
+.\frontend\src\lib\components\ui\accordion\accordion-item.svelte
+---
+<script lang="ts">
+	import { Accordion as AccordionPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = AccordionPrimitive.ItemProps;
+
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"];
+	export { className as class };
+</script>
+
+<AccordionPrimitive.Item {value} class={cn("border-b", className)} {...$$restProps}>
+	<slot />
+</AccordionPrimitive.Item>
+
+
+---
+.\frontend\src\lib\components\ui\accordion\accordion-trigger.svelte
+---
+<script lang="ts">
+	import { Accordion as AccordionPrimitive } from "bits-ui";
+	import ChevronDown from "lucide-svelte/icons/chevron-down";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = AccordionPrimitive.TriggerProps;
+	type $$Events = AccordionPrimitive.TriggerEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let level: AccordionPrimitive.HeaderProps["level"] = 3;
+	export { className as class };
+</script>
+
+<AccordionPrimitive.Header {level} class="flex">
+	<AccordionPrimitive.Trigger
+		class={cn(
+			"flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
+			className
+		)}
+		{...$$restProps}
+		on:click
+	>
+		<slot />
+		<ChevronDown class="h-4 w-4 transition-transform duration-200" />
+	</AccordionPrimitive.Trigger>
+</AccordionPrimitive.Header>
+
+
+---
+.\frontend\src\lib\components\ui\accordion\index.ts
+---
+import { Accordion as AccordionPrimitive } from "bits-ui";
+import Content from "./accordion-content.svelte";
+import Item from "./accordion-item.svelte";
+import Trigger from "./accordion-trigger.svelte";
+const Root = AccordionPrimitive.Root;
+
+export {
+	Root,
+	Content,
+	Item,
+	Trigger,
+	//
+	Root as Accordion,
+	Content as AccordionContent,
+	Item as AccordionItem,
+	Trigger as AccordionTrigger,
+};
+
+
+---
+.\frontend\src\lib\components\ui\badge\badge.svelte
+---
+<script lang="ts">
+	import { type Variant, badgeVariants } from "./index.js";
+	import { cn } from "$lib/utils.js";
+
+	let className: string | undefined | null = undefined;
+	export let href: string | undefined = undefined;
+	export let variant: Variant = "default";
+	export { className as class };
+</script>
+
+<svelte:element
+	this={href ? "a" : "span"}
+	{href}
+	class={cn(badgeVariants({ variant, className }))}
+	{...$$restProps}
+>
+	<slot />
+</svelte:element>
+
+
+---
+.\frontend\src\lib\components\ui\badge\index.ts
+---
+import { type VariantProps, tv } from "tailwind-variants";
+export { default as Badge } from "./badge.svelte";
+
+export const badgeVariants = tv({
+	base: "focus:ring-ring inline-flex select-none items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+	variants: {
+		variant: {
+			default: "bg-primary text-primary-foreground hover:bg-primary/80 border-transparent",
+			secondary:
+				"bg-secondary text-secondary-foreground hover:bg-secondary/80 border-transparent",
+			destructive:
+				"bg-destructive text-destructive-foreground hover:bg-destructive/80 border-transparent",
+			outline: "text-foreground",
+		},
+	},
+	defaultVariants: {
+		variant: "default",
+	},
+});
+
+export type Variant = VariantProps<typeof badgeVariants>["variant"];
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\breadcrumb-ellipsis.svelte
+---
+<script lang="ts">
+	import Ellipsis from "lucide-svelte/icons/ellipsis";
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLSpanElement> & {
+		el?: HTMLSpanElement;
+	};
+
+	export let el: $$Props["el"] = undefined;
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<span
+	bind:this={el}
+	role="presentation"
+	aria-hidden="true"
+	class={cn("flex h-9 w-9 items-center justify-center", className)}
+	{...$$restProps}
+>
+	<Ellipsis class="h-4 w-4" />
+	<span class="sr-only">More</span>
+</span>
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\breadcrumb-item.svelte
+---
+<script lang="ts">
+	import type { HTMLLiAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLLiAttributes & {
+		el?: HTMLLIElement;
+	};
+
+	export let el: $$Props["el"] = undefined;
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<li bind:this={el} class={cn("inline-flex items-center gap-1.5", className)}>
+	<slot />
+</li>
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\breadcrumb-link.svelte
+---
+<script lang="ts">
+	import type { HTMLAnchorAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAnchorAttributes & {
+		el?: HTMLAnchorElement;
+		asChild?: boolean;
+	};
+
+	export let href: $$Props["href"] = undefined;
+	export let el: $$Props["el"] = undefined;
+	export let asChild: $$Props["asChild"] = false;
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+
+	let attrs: Record<string, unknown>;
+
+	$: attrs = {
+		class: cn("hover:text-foreground transition-colors", className),
+		href,
+		...$$restProps,
+	};
+</script>
+
+{#if asChild}
+	<slot {attrs} />
+{:else}
+	<a bind:this={el} {...attrs} {href}>
+		<slot {attrs} />
+	</a>
+{/if}
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\breadcrumb-list.svelte
+---
+<script lang="ts">
+	import type { HTMLOlAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLOlAttributes & {
+		el?: HTMLOListElement;
+	};
+
+	export let el: $$Props["el"] = undefined;
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<ol
+	bind:this={el}
+	class={cn(
+		"text-muted-foreground flex flex-wrap items-center gap-1.5 break-words text-sm sm:gap-2.5",
+		className
+	)}
+	{...$$restProps}
+>
+	<slot />
+</ol>
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\breadcrumb-page.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLSpanElement> & {
+		el?: HTMLSpanElement;
+	};
+
+	export let el: $$Props["el"] = undefined;
+	export let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<span
+	bind:this={el}
+	role="link"
+	aria-disabled="true"
+	aria-current="page"
+	class={cn("text-foreground font-normal", className)}
+	{...$$restProps}
+>
+	<slot />
+</span>
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\breadcrumb-separator.svelte
+---
+<script lang="ts">
+	import type { HTMLLiAttributes } from "svelte/elements";
+	import ChevronRight from "lucide-svelte/icons/chevron-right";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLLiAttributes & {
+		el?: HTMLLIElement;
+	};
+
+	export let el: $$Props["el"] = undefined;
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<li
+	role="presentation"
+	aria-hidden="true"
+	class={cn("[&>svg]:size-3.5", className)}
+	bind:this={el}
+	{...$$restProps}
+>
+	<slot>
+		<ChevronRight />
+	</slot>
+</li>
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\breadcrumb.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+
+	type $$Props = HTMLAttributes<HTMLElement> & {
+		el?: HTMLElement;
+	};
+
+	export let el: $$Props["el"] = undefined;
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<nav class={className} bind:this={el} aria-label="breadcrumb" {...$$restProps}>
+	<slot />
+</nav>
+
+
+---
+.\frontend\src\lib\components\ui\breadcrumb\index.ts
+---
+import Root from "./breadcrumb.svelte";
+import Ellipsis from "./breadcrumb-ellipsis.svelte";
+import Item from "./breadcrumb-item.svelte";
+import Separator from "./breadcrumb-separator.svelte";
+import Link from "./breadcrumb-link.svelte";
+import List from "./breadcrumb-list.svelte";
+import Page from "./breadcrumb-page.svelte";
+
+export {
+	Root,
+	Ellipsis,
+	Item,
+	Separator,
+	Link,
+	List,
+	Page,
+	//
+	Root as Breadcrumb,
+	Ellipsis as BreadcrumbEllipsis,
+	Item as BreadcrumbItem,
+	Separator as BreadcrumbSeparator,
+	Link as BreadcrumbLink,
+	List as BreadcrumbList,
+	Page as BreadcrumbPage,
+};
+
+
+---
+.\frontend\src\lib\components\ui\button\button.svelte
+---
+<script lang="ts">
+	import { Button as ButtonPrimitive } from "bits-ui";
+	import { type Events, type Props, buttonVariants } from "./index.js";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = Props;
+	type $$Events = Events;
+
+	let className: $$Props["class"] = undefined;
+	export let variant: $$Props["variant"] = "default";
+	export let size: $$Props["size"] = "default";
+	export let builders: $$Props["builders"] = [];
+	export { className as class };
+</script>
+
+<ButtonPrimitive.Root
+	{builders}
+	class={cn(buttonVariants({ variant, size, className }))}
+	type="button"
+	{...$$restProps}
+	on:click
+	on:keydown
+>
+	<slot />
+</ButtonPrimitive.Root>
+
+
+---
+.\frontend\src\lib\components\ui\button\index.ts
+---
+import { type VariantProps, tv } from "tailwind-variants";
+import type { Button as ButtonPrimitive } from "bits-ui";
+import Root from "./button.svelte";
+
+const buttonVariants = tv({
+	base: "ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+	variants: {
+		variant: {
+			default: "bg-primary text-primary-foreground hover:bg-primary/90",
+			destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+			outline:
+				"border-input bg-background hover:bg-accent hover:text-accent-foreground border",
+			secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+			ghost: "hover:bg-accent hover:text-accent-foreground",
+			link: "text-primary underline-offset-4 hover:underline",
+		},
+		size: {
+			default: "h-10 px-4 py-2",
+			sm: "h-9 rounded-md px-3",
+			lg: "h-11 rounded-md px-8",
+			icon: "h-10 w-10",
+		},
+	},
+	defaultVariants: {
+		variant: "default",
+		size: "default",
+	},
+});
+
+type Variant = VariantProps<typeof buttonVariants>["variant"];
+type Size = VariantProps<typeof buttonVariants>["size"];
+
+type Props = ButtonPrimitive.Props & {
+	variant?: Variant;
+	size?: Size;
+};
+
+type Events = ButtonPrimitive.Events;
+
+export {
+	Root,
+	type Props,
+	type Events,
+	//
+	Root as Button,
+	type Props as ButtonProps,
+	type Events as ButtonEvents,
+	buttonVariants,
+};
+
+
+---
+.\frontend\src\lib\components\ui\card\card-content.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLDivElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<div class={cn("p-6", className)} {...$$restProps}>
+	<slot />
+</div>
+
+
+---
+.\frontend\src\lib\components\ui\card\card-description.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLParagraphElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<p class={cn("text-muted-foreground text-sm", className)} {...$$restProps}>
+	<slot />
+</p>
+
+
+---
+.\frontend\src\lib\components\ui\card\card-footer.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLDivElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<div class={cn("flex items-center p-6 pt-0", className)} {...$$restProps}>
+	<slot />
+</div>
+
+
+---
+.\frontend\src\lib\components\ui\card\card-header.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLDivElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<div class={cn("flex flex-col space-y-1.5 p-6 pb-0", className)} {...$$restProps}>
+	<slot />
+</div>
+
+
+---
+.\frontend\src\lib\components\ui\card\card-title.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import type { HeadingLevel } from "./index.js";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLHeadingElement> & {
+		tag?: HeadingLevel;
+	};
+
+	let className: $$Props["class"] = undefined;
+	export let tag: $$Props["tag"] = "h3";
+	export { className as class };
+</script>
+
+<svelte:element
+	this={tag}
+	class={cn("text-lg font-semibold leading-none tracking-tight", className)}
+	{...$$restProps}
+>
+	<slot />
+</svelte:element>
+
+
+---
+.\frontend\src\lib\components\ui\card\card.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLDivElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<div
+	class={cn("bg-card text-card-foreground rounded-lg border shadow-sm", className)}
+	{...$$restProps}
+>
+	<slot />
+</div>
+
+
+---
+.\frontend\src\lib\components\ui\card\index.ts
+---
+import Root from "./card.svelte";
+import Content from "./card-content.svelte";
+import Description from "./card-description.svelte";
+import Footer from "./card-footer.svelte";
+import Header from "./card-header.svelte";
+import Title from "./card-title.svelte";
+
+export {
+	Root,
+	Content,
+	Description,
+	Footer,
+	Header,
+	Title,
+	//
+	Root as Card,
+	Content as CardContent,
+	Description as CardDescription,
+	Footer as CardFooter,
+	Header as CardHeader,
+	Title as CardTitle,
+};
+
+export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-checkbox-item.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import Check from "lucide-svelte/icons/check";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.CheckboxItemProps;
+	type $$Events = DropdownMenuPrimitive.CheckboxItemEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let checked: $$Props["checked"] = undefined;
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.CheckboxItem
+	bind:checked
+	class={cn(
+		"data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+		className
+	)}
+	{...$$restProps}
+	on:click
+	on:keydown
+	on:focusin
+	on:focusout
+	on:pointerdown
+	on:pointerleave
+	on:pointermove
+>
+	<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+		<DropdownMenuPrimitive.CheckboxIndicator>
+			<Check class="h-4 w-4" />
+		</DropdownMenuPrimitive.CheckboxIndicator>
+	</span>
+	<slot />
+</DropdownMenuPrimitive.CheckboxItem>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-content.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import { cn, flyAndScale } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.ContentProps;
+	type $$Events = DropdownMenuPrimitive.ContentEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let sideOffset: $$Props["sideOffset"] = 4;
+	export let transition: $$Props["transition"] = flyAndScale;
+	export let transitionConfig: $$Props["transitionConfig"] = undefined;
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.Content
+	{transition}
+	{transitionConfig}
+	{sideOffset}
+	class={cn(
+		"bg-popover text-popover-foreground z-50 min-w-[8rem] rounded-md border p-1 shadow-md focus:outline-none",
+		className
+	)}
+	{...$$restProps}
+	on:keydown
+>
+	<slot />
+</DropdownMenuPrimitive.Content>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-item.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.ItemProps & {
+		inset?: boolean;
+	};
+	type $$Events = DropdownMenuPrimitive.ItemEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let inset: $$Props["inset"] = undefined;
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.Item
+	class={cn(
+		"data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+		inset && "pl-8",
+		className
+	)}
+	{...$$restProps}
+	on:click
+	on:keydown
+	on:focusin
+	on:focusout
+	on:pointerdown
+	on:pointerleave
+	on:pointermove
+>
+	<slot />
+</DropdownMenuPrimitive.Item>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-label.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.LabelProps & {
+		inset?: boolean;
+	};
+
+	let className: $$Props["class"] = undefined;
+	export let inset: $$Props["inset"] = undefined;
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.Label
+	class={cn("px-2 py-1.5 text-sm font-semibold", inset && "pl-8", className)}
+	{...$$restProps}
+>
+	<slot />
+</DropdownMenuPrimitive.Label>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-radio-group.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+
+	type $$Props = DropdownMenuPrimitive.RadioGroupProps;
+
+	export let value: $$Props["value"] = undefined;
+</script>
+
+<DropdownMenuPrimitive.RadioGroup {...$$restProps} bind:value>
+	<slot />
+</DropdownMenuPrimitive.RadioGroup>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-radio-item.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import Circle from "lucide-svelte/icons/circle";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.RadioItemProps;
+	type $$Events = DropdownMenuPrimitive.RadioItemEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"];
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.RadioItem
+	class={cn(
+		"data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+		className
+	)}
+	{value}
+	{...$$restProps}
+	on:click
+	on:keydown
+	on:focusin
+	on:focusout
+	on:pointerdown
+	on:pointerleave
+	on:pointermove
+>
+	<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+		<DropdownMenuPrimitive.RadioIndicator>
+			<Circle class="h-2 w-2 fill-current" />
+		</DropdownMenuPrimitive.RadioIndicator>
+	</span>
+	<slot />
+</DropdownMenuPrimitive.RadioItem>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-separator.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.SeparatorProps;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.Separator
+	class={cn("bg-muted -mx-1 my-1 h-px", className)}
+	{...$$restProps}
+/>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-shortcut.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLSpanElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<span class={cn("ml-auto text-xs tracking-widest opacity-60", className)} {...$$restProps}>
+	<slot />
+</span>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-sub-content.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import { cn, flyAndScale } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.SubContentProps;
+	type $$Events = DropdownMenuPrimitive.SubContentEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let transition: $$Props["transition"] = flyAndScale;
+	export let transitionConfig: $$Props["transitionConfig"] = {
+		x: -10,
+		y: 0,
+	};
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.SubContent
+	{transition}
+	{transitionConfig}
+	class={cn(
+		"bg-popover text-popover-foreground z-50 min-w-[8rem] rounded-md border p-1 shadow-lg focus:outline-none",
+		className
+	)}
+	{...$$restProps}
+	on:keydown
+	on:focusout
+	on:pointermove
+>
+	<slot />
+</DropdownMenuPrimitive.SubContent>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\dropdown-menu-sub-trigger.svelte
+---
+<script lang="ts">
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import ChevronRight from "lucide-svelte/icons/chevron-right";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = DropdownMenuPrimitive.SubTriggerProps & {
+		inset?: boolean;
+	};
+	type $$Events = DropdownMenuPrimitive.SubTriggerEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let inset: $$Props["inset"] = undefined;
+	export { className as class };
+</script>
+
+<DropdownMenuPrimitive.SubTrigger
+	class={cn(
+		"data-[highlighted]:bg-accent data-[state=open]:bg-accent data-[highlighted]:text-accent-foreground data-[state=open]:text-accent-foreground flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none",
+		inset && "pl-8",
+		className
+	)}
+	{...$$restProps}
+	on:click
+	on:keydown
+	on:focusin
+	on:focusout
+	on:pointerleave
+	on:pointermove
+>
+	<slot />
+	<ChevronRight class="ml-auto h-4 w-4" />
+</DropdownMenuPrimitive.SubTrigger>
+
+
+---
+.\frontend\src\lib\components\ui\dropdown-menu\index.ts
+---
+import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+import Item from "./dropdown-menu-item.svelte";
+import Label from "./dropdown-menu-label.svelte";
+import Content from "./dropdown-menu-content.svelte";
+import Shortcut from "./dropdown-menu-shortcut.svelte";
+import RadioItem from "./dropdown-menu-radio-item.svelte";
+import Separator from "./dropdown-menu-separator.svelte";
+import RadioGroup from "./dropdown-menu-radio-group.svelte";
+import SubContent from "./dropdown-menu-sub-content.svelte";
+import SubTrigger from "./dropdown-menu-sub-trigger.svelte";
+import CheckboxItem from "./dropdown-menu-checkbox-item.svelte";
+
+const Sub = DropdownMenuPrimitive.Sub;
+const Root = DropdownMenuPrimitive.Root;
+const Trigger = DropdownMenuPrimitive.Trigger;
+const Group = DropdownMenuPrimitive.Group;
+
+export {
+	Sub,
+	Root,
+	Item,
+	Label,
+	Group,
+	Trigger,
+	Content,
+	Shortcut,
+	Separator,
+	RadioItem,
+	SubContent,
+	SubTrigger,
+	RadioGroup,
+	CheckboxItem,
+	//
+	Root as DropdownMenu,
+	Sub as DropdownMenuSub,
+	Item as DropdownMenuItem,
+	Label as DropdownMenuLabel,
+	Group as DropdownMenuGroup,
+	Content as DropdownMenuContent,
+	Trigger as DropdownMenuTrigger,
+	Shortcut as DropdownMenuShortcut,
+	RadioItem as DropdownMenuRadioItem,
+	Separator as DropdownMenuSeparator,
+	RadioGroup as DropdownMenuRadioGroup,
+	SubContent as DropdownMenuSubContent,
+	SubTrigger as DropdownMenuSubTrigger,
+	CheckboxItem as DropdownMenuCheckboxItem,
+};
+
+
+---
+.\frontend\src\lib\components\ui\input\index.ts
+---
+import Root from "./input.svelte";
+
+export type FormInputEvent<T extends Event = Event> = T & {
+	currentTarget: EventTarget & HTMLInputElement;
+};
+export type InputEvents = {
+	blur: FormInputEvent<FocusEvent>;
+	change: FormInputEvent<Event>;
+	click: FormInputEvent<MouseEvent>;
+	focus: FormInputEvent<FocusEvent>;
+	focusin: FormInputEvent<FocusEvent>;
+	focusout: FormInputEvent<FocusEvent>;
+	keydown: FormInputEvent<KeyboardEvent>;
+	keypress: FormInputEvent<KeyboardEvent>;
+	keyup: FormInputEvent<KeyboardEvent>;
+	mouseover: FormInputEvent<MouseEvent>;
+	mouseenter: FormInputEvent<MouseEvent>;
+	mouseleave: FormInputEvent<MouseEvent>;
+	mousemove: FormInputEvent<MouseEvent>;
+	paste: FormInputEvent<ClipboardEvent>;
+	input: FormInputEvent<InputEvent>;
+	wheel: FormInputEvent<WheelEvent>;
+};
+
+export {
+	Root,
+	//
+	Root as Input,
+};
+
+
+---
+.\frontend\src\lib\components\ui\input\input.svelte
+---
+<script lang="ts">
+	import type { HTMLInputAttributes } from "svelte/elements";
+	import type { InputEvents } from "./index.js";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLInputAttributes;
+	type $$Events = InputEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"] = undefined;
+	export { className as class };
+
+	// Workaround for https://github.com/sveltejs/svelte/issues/9305
+	// Fixed in Svelte 5, but not backported to 4.x.
+	export let readonly: $$Props["readonly"] = undefined;
+</script>
+
+<input
+	class={cn(
+		"border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+		className
+	)}
+	bind:value
+	{readonly}
+	on:blur
+	on:change
+	on:click
+	on:focus
+	on:focusin
+	on:focusout
+	on:keydown
+	on:keypress
+	on:keyup
+	on:mouseover
+	on:mouseenter
+	on:mouseleave
+	on:mousemove
+	on:paste
+	on:input
+	on:wheel|passive
+	{...$$restProps}
+/>
+
+
+---
+.\frontend\src\lib\components\ui\light-switch\index.ts
+---
+import { lightSwitch } from "$lib/components/ui/light-switch/light-switch.svelte"
+
+export { lightSwitch };
+
+
+
+---
+.\frontend\src\lib\components\ui\light-switch\light-switch.svelte
+---
+<script lang="ts">
+    import Sun from "lucide-svelte/icons/sun";
+    import Moon from "lucide-svelte/icons/moon";
+    
+    import { toggleMode } from "mode-watcher";
+    import { Button } from "$lib/components/ui/button/index.js";
+   </script>
+    
+   <Button on:click={toggleMode} variant="outline" size="icon">
+    <Sun
+     class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+    />
+    <Moon
+     class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+    />
+    <span class="sr-only">Toggle theme</span>
+   </Button>
+
+---
+.\frontend\src\lib\components\ui\progress\index.ts
+---
+import Root from "./progress.svelte";
+
+export {
+	Root,
+	//
+	Root as Progress,
+};
+
+
+---
+.\frontend\src\lib\components\ui\progress\progress.svelte
+---
+<script lang="ts">
+	import { Progress as ProgressPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = ProgressPrimitive.Props;
+
+	let className: $$Props["class"] = undefined;
+	export let max: $$Props["max"] = 100;
+	export let value: $$Props["value"] = undefined;
+	export { className as class };
+</script>
+
+<ProgressPrimitive.Root
+	class={cn("bg-secondary relative h-4 w-full overflow-hidden rounded-full", className)}
+	{...$$restProps}
+>
+	<div
+		class="bg-primary h-full w-full flex-1 transition-all"
+		style={`transform: translateX(-${100 - (100 * (value ?? 0)) / (max ?? 1)}%)`}
+	></div>
+</ProgressPrimitive.Root>
+
+
+---
+.\frontend\src\lib\components\ui\scroll-area\index.ts
+---
+import Scrollbar from "./scroll-area-scrollbar.svelte";
+import Root from "./scroll-area.svelte";
+
+export {
+	Root,
+	Scrollbar,
+	//,
+	Root as ScrollArea,
+	Scrollbar as ScrollAreaScrollbar,
+};
+
+
+---
+.\frontend\src\lib\components\ui\scroll-area\scroll-area-scrollbar.svelte
+---
+<script lang="ts">
+	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = ScrollAreaPrimitive.ScrollbarProps & {
+		orientation?: "vertical" | "horizontal";
+	};
+
+	let className: $$Props["class"] = undefined;
+	export let orientation: $$Props["orientation"] = "vertical";
+	export { className as class };
+</script>
+
+<ScrollAreaPrimitive.Scrollbar
+	{orientation}
+	class={cn(
+		"flex touch-none select-none transition-colors",
+		orientation === "vertical" && "h-full w-2.5 border-l border-l-transparent p-px",
+		orientation === "horizontal" && "h-2.5 w-full border-t border-t-transparent p-px",
+		className
+	)}
+>
+	<slot />
+	<ScrollAreaPrimitive.Thumb
+		class={cn("bg-border relative rounded-full", orientation === "vertical" && "flex-1")}
+	/>
+</ScrollAreaPrimitive.Scrollbar>
+
+
+---
+.\frontend\src\lib\components\ui\scroll-area\scroll-area.svelte
+---
+<script lang="ts">
+	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
+	import { Scrollbar } from "./index.js";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = ScrollAreaPrimitive.Props & {
+		orientation?: "vertical" | "horizontal" | "both";
+		scrollbarXClasses?: string;
+		scrollbarYClasses?: string;
+	};
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+	export let orientation = "vertical";
+	export let scrollbarXClasses: string = "";
+	export let scrollbarYClasses: string = "";
+</script>
+
+<ScrollAreaPrimitive.Root {...$$restProps} class={cn("relative overflow-hidden", className)}>
+	<ScrollAreaPrimitive.Viewport class="h-full w-full rounded-[inherit]">
+		<ScrollAreaPrimitive.Content>
+			<slot />
+		</ScrollAreaPrimitive.Content>
+	</ScrollAreaPrimitive.Viewport>
+	{#if orientation === "vertical" || orientation === "both"}
+		<Scrollbar orientation="vertical" class={scrollbarYClasses} />
+	{/if}
+	{#if orientation === "horizontal" || orientation === "both"}
+		<Scrollbar orientation="horizontal" class={scrollbarXClasses} />
+	{/if}
+	<ScrollAreaPrimitive.Corner />
+</ScrollAreaPrimitive.Root>
+
+
+---
+.\frontend\src\lib\components\ui\select\index.ts
+---
+import { Select as SelectPrimitive } from "bits-ui";
+
+import Label from "./select-label.svelte";
+import Item from "./select-item.svelte";
+import Content from "./select-content.svelte";
+import Trigger from "./select-trigger.svelte";
+import Separator from "./select-separator.svelte";
+
+const Root = SelectPrimitive.Root;
+const Group = SelectPrimitive.Group;
+const Input = SelectPrimitive.Input;
+const Value = SelectPrimitive.Value;
+
+export {
+	Root,
+	Group,
+	Input,
+	Label,
+	Item,
+	Value,
+	Content,
+	Trigger,
+	Separator,
+	//
+	Root as Select,
+	Group as SelectGroup,
+	Input as SelectInput,
+	Label as SelectLabel,
+	Item as SelectItem,
+	Value as SelectValue,
+	Content as SelectContent,
+	Trigger as SelectTrigger,
+	Separator as SelectSeparator,
+};
+
+
+---
+.\frontend\src\lib\components\ui\select\select-content.svelte
+---
+<script lang="ts">
+	import { Select as SelectPrimitive } from "bits-ui";
+	import { scale } from "svelte/transition";
+	import { cn, flyAndScale } from "$lib/utils.js";
+
+	type $$Props = SelectPrimitive.ContentProps;
+	type $$Events = SelectPrimitive.ContentEvents;
+
+	export let sideOffset: $$Props["sideOffset"] = 4;
+	export let inTransition: $$Props["inTransition"] = flyAndScale;
+	export let inTransitionConfig: $$Props["inTransitionConfig"] = undefined;
+	export let outTransition: $$Props["outTransition"] = scale;
+	export let outTransitionConfig: $$Props["outTransitionConfig"] = {
+		start: 0.95,
+		opacity: 0,
+		duration: 50,
+	};
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<SelectPrimitive.Content
+	{inTransition}
+	{inTransitionConfig}
+	{outTransition}
+	{outTransitionConfig}
+	{sideOffset}
+	class={cn(
+		"bg-popover text-popover-foreground relative z-50 min-w-[8rem] overflow-hidden rounded-md border shadow-md outline-none",
+		className
+	)}
+	{...$$restProps}
+	on:keydown
+>
+	<div class="w-full p-1">
+		<slot />
+	</div>
+</SelectPrimitive.Content>
+
+
+---
+.\frontend\src\lib\components\ui\select\select-item.svelte
+---
+<script lang="ts">
+	import Check from "lucide-svelte/icons/check";
+	import { Select as SelectPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SelectPrimitive.ItemProps;
+	type $$Events = SelectPrimitive.ItemEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"];
+	export let label: $$Props["label"] = undefined;
+	export let disabled: $$Props["disabled"] = undefined;
+	export { className as class };
+</script>
+
+<SelectPrimitive.Item
+	{value}
+	{disabled}
+	{label}
+	class={cn(
+		"data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+		className
+	)}
+	{...$$restProps}
+	on:click
+	on:keydown
+	on:focusin
+	on:focusout
+	on:pointerleave
+	on:pointermove
+>
+	<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+		<SelectPrimitive.ItemIndicator>
+			<Check class="h-4 w-4" />
+		</SelectPrimitive.ItemIndicator>
+	</span>
+	<slot>
+		{label || value}
+	</slot>
+</SelectPrimitive.Item>
+
+
+---
+.\frontend\src\lib\components\ui\select\select-label.svelte
+---
+<script lang="ts">
+	import { Select as SelectPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SelectPrimitive.LabelProps;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<SelectPrimitive.Label
+	class={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
+	{...$$restProps}
+>
+	<slot />
+</SelectPrimitive.Label>
+
+
+---
+.\frontend\src\lib\components\ui\select\select-separator.svelte
+---
+<script lang="ts">
+	import { Select as SelectPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SelectPrimitive.SeparatorProps;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<SelectPrimitive.Separator class={cn("bg-muted -mx-1 my-1 h-px", className)} {...$$restProps} />
+
+
+---
+.\frontend\src\lib\components\ui\select\select-trigger.svelte
+---
+<script lang="ts">
+	import { Select as SelectPrimitive } from "bits-ui";
+	import ChevronDown from "lucide-svelte/icons/chevron-down";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SelectPrimitive.TriggerProps;
+	type $$Events = SelectPrimitive.TriggerEvents;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<SelectPrimitive.Trigger
+	class={cn(
+		"border-input bg-background ring-offset-background focus-visible:ring-ring aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+		className
+	)}
+	{...$$restProps}
+	let:builder
+	on:click
+	on:keydown
+>
+	<slot {builder} />
+	<div>
+		<ChevronDown class="h-4 w-4 opacity-50" />
+	</div>
+</SelectPrimitive.Trigger>
+
+
+---
+.\frontend\src\lib\components\ui\sheet\index.ts
+---
+import { Dialog as SheetPrimitive } from "bits-ui";
+import { type VariantProps, tv } from "tailwind-variants";
+
+import Portal from "./sheet-portal.svelte";
+import Overlay from "./sheet-overlay.svelte";
+import Content from "./sheet-content.svelte";
+import Header from "./sheet-header.svelte";
+import Footer from "./sheet-footer.svelte";
+import Title from "./sheet-title.svelte";
+import Description from "./sheet-description.svelte";
+
+const Root = SheetPrimitive.Root;
+const Close = SheetPrimitive.Close;
+const Trigger = SheetPrimitive.Trigger;
+
+export {
+	Root,
+	Close,
+	Trigger,
+	Portal,
+	Overlay,
+	Content,
+	Header,
+	Footer,
+	Title,
+	Description,
+	//
+	Root as Sheet,
+	Close as SheetClose,
+	Trigger as SheetTrigger,
+	Portal as SheetPortal,
+	Overlay as SheetOverlay,
+	Content as SheetContent,
+	Header as SheetHeader,
+	Footer as SheetFooter,
+	Title as SheetTitle,
+	Description as SheetDescription,
+};
+
+export const sheetVariants = tv({
+	base: "bg-background fixed z-50 gap-4 p-6 shadow-lg",
+	variants: {
+		side: {
+			top: "inset-x-0 top-0 border-b",
+			bottom: "inset-x-0 bottom-0 border-t",
+			left: "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm",
+			right: "inset-y-0 right-0 h-full w-3/4  border-l sm:max-w-sm",
+		},
+	},
+	defaultVariants: {
+		side: "right",
+	},
+});
+
+export const sheetTransitions = {
+	top: {
+		in: {
+			y: "-100%",
+			duration: 500,
+			opacity: 1,
+		},
+		out: {
+			y: "-100%",
+			duration: 300,
+			opacity: 1,
+		},
+	},
+	bottom: {
+		in: {
+			y: "100%",
+			duration: 500,
+			opacity: 1,
+		},
+		out: {
+			y: "100%",
+			duration: 300,
+			opacity: 1,
+		},
+	},
+	left: {
+		in: {
+			x: "-100%",
+			duration: 500,
+			opacity: 1,
+		},
+		out: {
+			x: "-100%",
+			duration: 300,
+			opacity: 1,
+		},
+	},
+	right: {
+		in: {
+			x: "100%",
+			duration: 500,
+			opacity: 1,
+		},
+		out: {
+			x: "100%",
+			duration: 300,
+			opacity: 1,
+		},
+	},
+};
+
+export type Side = VariantProps<typeof sheetVariants>["side"];
+
+
+---
+.\frontend\src\lib\components\ui\sheet\sheet-content.svelte
+---
+<script lang="ts">
+	import { Dialog as SheetPrimitive } from "bits-ui";
+	import X from "lucide-svelte/icons/x";
+	import { fly } from "svelte/transition";
+	import {
+		SheetOverlay,
+		SheetPortal,
+		type Side,
+		sheetTransitions,
+		sheetVariants,
+	} from "./index.js";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SheetPrimitive.ContentProps & {
+		side?: Side;
+	};
+
+	let className: $$Props["class"] = undefined;
+	export let side: $$Props["side"] = "right";
+	export { className as class };
+	export let inTransition: $$Props["inTransition"] = fly;
+	export let inTransitionConfig: $$Props["inTransitionConfig"] =
+		sheetTransitions[side ?? "right"].in;
+	export let outTransition: $$Props["outTransition"] = fly;
+	export let outTransitionConfig: $$Props["outTransitionConfig"] =
+		sheetTransitions[side ?? "right"].out;
+</script>
+
+<SheetPortal>
+	<SheetOverlay />
+	<SheetPrimitive.Content
+		{inTransition}
+		{inTransitionConfig}
+		{outTransition}
+		{outTransitionConfig}
+		class={cn(sheetVariants({ side }), className)}
+		{...$$restProps}
+	>
+		<slot />
+		<SheetPrimitive.Close
+			class="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none"
+		>
+			<X class="h-4 w-4" />
+			<span class="sr-only">Close</span>
+		</SheetPrimitive.Close>
+	</SheetPrimitive.Content>
+</SheetPortal>
+
+
+---
+.\frontend\src\lib\components\ui\sheet\sheet-description.svelte
+---
+<script lang="ts">
+	import { Dialog as SheetPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SheetPrimitive.DescriptionProps;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<SheetPrimitive.Description class={cn("text-muted-foreground text-sm", className)} {...$$restProps}>
+	<slot />
+</SheetPrimitive.Description>
+
+
+---
+.\frontend\src\lib\components\ui\sheet\sheet-footer.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLDivElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<div
+	class={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)}
+	{...$$restProps}
+>
+	<slot />
+</div>
+
+
+---
+.\frontend\src\lib\components\ui\sheet\sheet-header.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLDivElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<div class={cn("flex flex-col space-y-2 text-center sm:text-left", className)} {...$$restProps}>
+	<slot />
+</div>
+
+
+---
+.\frontend\src\lib\components\ui\sheet\sheet-overlay.svelte
+---
+<script lang="ts">
+	import { Dialog as SheetPrimitive } from "bits-ui";
+	import { fade } from "svelte/transition";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SheetPrimitive.OverlayProps;
+
+	let className: $$Props["class"] = undefined;
+	export let transition: $$Props["transition"] = fade;
+	export let transitionConfig: $$Props["transitionConfig"] = {
+		duration: 150,
+	};
+	export { className as class };
+</script>
+
+<SheetPrimitive.Overlay
+	{transition}
+	{transitionConfig}
+	class={cn("bg-background/80 fixed inset-0 z-50 backdrop-blur-sm ", className)}
+	{...$$restProps}
+/>
+
+
+---
+.\frontend\src\lib\components\ui\sheet\sheet-portal.svelte
+---
+<script lang="ts">
+	import { Dialog as SheetPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SheetPrimitive.PortalProps;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<SheetPrimitive.Portal class={cn(className)} {...$$restProps}>
+	<slot />
+</SheetPrimitive.Portal>
+
+
+---
+.\frontend\src\lib\components\ui\sheet\sheet-title.svelte
+---
+<script lang="ts">
+	import { Dialog as SheetPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SheetPrimitive.TitleProps;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<SheetPrimitive.Title
+	class={cn("text-foreground text-lg font-semibold", className)}
+	{...$$restProps}
+>
+	<slot />
+</SheetPrimitive.Title>
+
+
+---
+.\frontend\src\lib\components\ui\switch\index.ts
+---
+import Root from "./switch.svelte";
+
+export {
+	Root,
+	//
+	Root as Switch,
+};
+
+
+---
+.\frontend\src\lib\components\ui\switch\switch.svelte
+---
+<script lang="ts">
+	import { Switch as SwitchPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = SwitchPrimitive.Props;
+	type $$Events = SwitchPrimitive.Events;
+
+	let className: $$Props["class"] = undefined;
+	export let checked: $$Props["checked"] = undefined;
+	export { className as class };
+</script>
+
+<SwitchPrimitive.Root
+	bind:checked
+	class={cn(
+		"focus-visible:ring-ring focus-visible:ring-offset-background data-[state=checked]:bg-primary data-[state=unchecked]:bg-input peer inline-flex h-[24px] w-[44px] shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+		className
+	)}
+	{...$$restProps}
+	on:click
+	on:keydown
+>
+	<SwitchPrimitive.Thumb
+		class={cn(
+			"bg-background pointer-events-none block h-5 w-5 rounded-full shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
+		)}
+	/>
+</SwitchPrimitive.Root>
+
+
+---
+.\frontend\src\lib\components\ui\table\index.ts
+---
+import Root from "./table.svelte";
+import Body from "./table-body.svelte";
+import Caption from "./table-caption.svelte";
+import Cell from "./table-cell.svelte";
+import Footer from "./table-footer.svelte";
+import Head from "./table-head.svelte";
+import Header from "./table-header.svelte";
+import Row from "./table-row.svelte";
+
+export {
+	Root,
+	Body,
+	Caption,
+	Cell,
+	Footer,
+	Head,
+	Header,
+	Row,
+	//
+	Root as Table,
+	Body as TableBody,
+	Caption as TableCaption,
+	Cell as TableCell,
+	Footer as TableFooter,
+	Head as TableHead,
+	Header as TableHeader,
+	Row as TableRow,
+};
+
+
+---
+.\frontend\src\lib\components\ui\table\table-body.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLTableSectionElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<tbody class={cn("[&_tr:last-child]:border-0", className)} {...$$restProps}>
+	<slot />
+</tbody>
+
+
+---
+.\frontend\src\lib\components\ui\table\table-caption.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLTableCaptionElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<caption class={cn("text-muted-foreground mt-4 text-sm", className)} {...$$restProps}>
+	<slot />
+</caption>
+
+
+---
+.\frontend\src\lib\components\ui\table\table-cell.svelte
+---
+<script lang="ts">
+	import type { HTMLTdAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLTdAttributes;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<td
+	class={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+	{...$$restProps}
+	on:click
+	on:keydown
+>
+	<slot />
+</td>
+
+
+---
+.\frontend\src\lib\components\ui\table\table-footer.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLTableSectionElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<tfoot class={cn("bg-primary text-primary-foreground font-medium", className)} {...$$restProps}>
+	<slot />
+</tfoot>
+
+
+---
+.\frontend\src\lib\components\ui\table\table-head.svelte
+---
+<script lang="ts">
+	import type { HTMLThAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLThAttributes;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<th
+	class={cn(
+		"text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0",
+		className
+	)}
+	{...$$restProps}
+>
+	<slot />
+</th>
+
+
+---
+.\frontend\src\lib\components\ui\table\table-header.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLTableSectionElement>;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<thead class={cn("[&_tr]:border-b", className)} {...$$restProps} on:click on:keydown>
+	<slot />
+</thead>
+
+
+---
+.\frontend\src\lib\components\ui\table\table-row.svelte
+---
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLAttributes<HTMLTableRowElement> & {
+		"data-state"?: unknown;
+	};
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<tr
+	class={cn(
+		"hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+		className
+	)}
+	{...$$restProps}
+	on:click
+	on:keydown
+>
+	<slot />
+</tr>
+
+
+---
+.\frontend\src\lib\components\ui\table\table.svelte
+---
+<script lang="ts">
+	import type { HTMLTableAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLTableAttributes;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<div class="relative w-full overflow-auto">
+	<table class={cn("w-full caption-bottom text-sm", className)} {...$$restProps}>
+		<slot />
+	</table>
+</div>
+
+
+---
+.\frontend\src\lib\components\ui\tabs\index.ts
+---
+import { Tabs as TabsPrimitive } from "bits-ui";
+import Content from "./tabs-content.svelte";
+import List from "./tabs-list.svelte";
+import Trigger from "./tabs-trigger.svelte";
+
+const Root = TabsPrimitive.Root;
+
+export {
+	Root,
+	Content,
+	List,
+	Trigger,
+	//
+	Root as Tabs,
+	Content as TabsContent,
+	List as TabsList,
+	Trigger as TabsTrigger,
+};
+
+
+---
+.\frontend\src\lib\components\ui\tabs\tabs-content.svelte
+---
+<script lang="ts">
+	import { Tabs as TabsPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = TabsPrimitive.ContentProps;
+
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"];
+	export { className as class };
+</script>
+
+<TabsPrimitive.Content
+	class={cn(
+		"ring-offset-background focus-visible:ring-ring mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+		className
+	)}
+	{value}
+	{...$$restProps}
+>
+	<slot />
+</TabsPrimitive.Content>
+
+
+---
+.\frontend\src\lib\components\ui\tabs\tabs-list.svelte
+---
+<script lang="ts">
+	import { Tabs as TabsPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = TabsPrimitive.ListProps;
+
+	let className: $$Props["class"] = undefined;
+	export { className as class };
+</script>
+
+<TabsPrimitive.List
+	class={cn(
+		"bg-muted text-muted-foreground inline-flex h-10 items-center justify-center rounded-md p-1",
+		className
+	)}
+	{...$$restProps}
+>
+	<slot />
+</TabsPrimitive.List>
+
+
+---
+.\frontend\src\lib\components\ui\tabs\tabs-trigger.svelte
+---
+<script lang="ts">
+	import { Tabs as TabsPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = TabsPrimitive.TriggerProps;
+	type $$Events = TabsPrimitive.TriggerEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"];
+	export { className as class };
+</script>
+
+<TabsPrimitive.Trigger
+	class={cn(
+		"ring-offset-background focus-visible:ring-ring data-[state=active]:bg-background data-[state=active]:text-foreground inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm",
+		className
+	)}
+	{value}
+	{...$$restProps}
+	on:click
+>
+	<slot />
+</TabsPrimitive.Trigger>
+
+
+---
+.\frontend\src\lib\components\ui\textarea\index.ts
+---
+import Root from "./textarea.svelte";
+
+type FormTextareaEvent<T extends Event = Event> = T & {
+	currentTarget: EventTarget & HTMLTextAreaElement;
+};
+
+type TextareaEvents = {
+	blur: FormTextareaEvent<FocusEvent>;
+	change: FormTextareaEvent<Event>;
+	click: FormTextareaEvent<MouseEvent>;
+	focus: FormTextareaEvent<FocusEvent>;
+	keydown: FormTextareaEvent<KeyboardEvent>;
+	keypress: FormTextareaEvent<KeyboardEvent>;
+	keyup: FormTextareaEvent<KeyboardEvent>;
+	mouseover: FormTextareaEvent<MouseEvent>;
+	mouseenter: FormTextareaEvent<MouseEvent>;
+	mouseleave: FormTextareaEvent<MouseEvent>;
+	paste: FormTextareaEvent<ClipboardEvent>;
+	input: FormTextareaEvent<InputEvent>;
+};
+
+export {
+	Root,
+	//
+	Root as Textarea,
+	type TextareaEvents,
+	type FormTextareaEvent,
+};
+
+
+---
+.\frontend\src\lib\components\ui\textarea\textarea.svelte
+---
+<script lang="ts">
+	import type { HTMLTextareaAttributes } from "svelte/elements";
+	import type { TextareaEvents } from "./index.js";
+	import { cn } from "$lib/utils.js";
+
+	type $$Props = HTMLTextareaAttributes;
+	type $$Events = TextareaEvents;
+
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"] = undefined;
+	export { className as class };
+
+	// Workaround for https://github.com/sveltejs/svelte/issues/9305
+	// Fixed in Svelte 5, but not backported to 4.x.
+	export let readonly: $$Props["readonly"] = undefined;
+</script>
+
+<textarea
+	class={cn(
+		"border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+		className
+	)}
+	bind:value
+	{readonly}
+	on:blur
+	on:change
+	on:click
+	on:focus
+	on:keydown
+	on:keypress
+	on:keyup
+	on:mouseover
+	on:mouseenter
+	on:mouseleave
+	on:paste
+	on:input
+	{...$$restProps}
+></textarea>
+
+
+---
+.\frontend\src\lib\components\ui\tooltip\index.ts
+---
+import { Tooltip as TooltipPrimitive } from "bits-ui";
+import Content from "./tooltip-content.svelte";
+
+const Root = TooltipPrimitive.Root;
+const Trigger = TooltipPrimitive.Trigger;
+
+export {
+	Root,
+	Trigger,
+	Content,
+	//
+	Root as Tooltip,
+	Content as TooltipContent,
+	Trigger as TooltipTrigger,
+};
+
+
+---
+.\frontend\src\lib\components\ui\tooltip\tooltip-content.svelte
+---
+<script lang="ts">
+	import { Tooltip as TooltipPrimitive } from "bits-ui";
+	import { cn, flyAndScale } from "$lib/utils.js";
+
+	type $$Props = TooltipPrimitive.ContentProps;
+
+	let className: $$Props["class"] = undefined;
+	export let sideOffset: $$Props["sideOffset"] = 4;
+	export let transition: $$Props["transition"] = flyAndScale;
+	export let transitionConfig: $$Props["transitionConfig"] = {
+		y: 8,
+		duration: 150,
+	};
+	export { className as class };
+</script>
+
+<TooltipPrimitive.Content
+	{transition}
+	{transitionConfig}
+	{sideOffset}
+	class={cn(
+		"bg-popover text-popover-foreground z-50 overflow-hidden rounded-md border px-3 py-1.5 text-sm shadow-md",
+		className
+	)}
+	{...$$restProps}
+>
+	<slot />
+</TooltipPrimitive.Content>
+
+
+---
+.\frontend\src\lib\config\index.ts
+---
+export * from "./navigation.js";
+export * from "./site.js";
+
+---
+.\frontend\src\lib\config\navigation.ts
+---
+export type NavItem = {
+	title: string;
+	href?: string;
+	disabled?: boolean;
+	external?: boolean;
+	label?: string;
+};
+
+export type SidebarNavItem = NavItem & {
+	items: SidebarNavItem[];
+};
+
+export type NavItemWithChildren = NavItem & {
+	items: NavItemWithChildren[];
+};
+
+export type Navigation = {
+	main: NavItem[];
+	sidebar: SidebarNavItem[];
+};
+
+export const navigation: Navigation = {
+	main: [
+		{
+			title: "Docs",
+			href: "/docs",
+		},
+	],
+	sidebar: [
+		{
+			title: "Overview",
+			items: [
+				{
+					title: "Introduction",
+					href: "/docs/introduction",
+					items: [],
+				},
+				{
+					title: "Getting Started",
+					href: "/docs/getting-started",
+					items: [],
+				},
+				{
+					title: "Delegation",
+					href: "/docs/delegation",
+					items: [],
+				},
+				{
+					title: "Styling",
+					href: "/docs/styling",
+					items: [],
+				},
+			],
+		},
+		{
+			title: "Components",
+			items: [
+				{
+					title: "Accordion",
+					href: "/docs/components/accordion",
+					items: [],
+				},
+				{
+					title: "Alert Dialog",
+					href: "/docs/components/alert-dialog",
+					items: [],
+				},
+				{
+					title: "Aspect Ratio",
+					href: "/docs/components/aspect-ratio",
+					items: [],
+				},
+				{
+					title: "Avatar",
+					href: "/docs/components/avatar",
+					items: [],
+				},
+				{
+					title: "Button",
+					href: "/docs/components/button",
+					items: [],
+				},
+				{
+					title: "Calendar",
+					href: "/docs/components/calendar",
+					items: [],
+				},
+				{
+					title: "Checkbox",
+					href: "/docs/components/checkbox",
+					items: [],
+				},
+				{
+					title: "Collapsible",
+					href: "/docs/components/collapsible",
+					items: [],
+				},
+				{
+					title: "Combobox",
+					href: "/docs/components/combobox",
+					label: "New",
+					items: [],
+				},
+				{
+					title: "Context Menu",
+					href: "/docs/components/context-menu",
+					items: [],
+				},
+				{
+					title: "Date Field",
+					href: "/docs/components/date-field",
+					items: [],
+				},
+				{
+					title: "Date Picker",
+					href: "/docs/components/date-picker",
+					items: [],
+				},
+				{
+					title: "Date Range Field",
+					href: "/docs/components/date-range-field",
+					items: [],
+				},
+				{
+					title: "Date Range Picker",
+					href: "/docs/components/date-range-picker",
+					items: [],
+				},
+				{
+					title: "Dialog",
+					href: "/docs/components/dialog",
+					items: [],
+				},
+				{
+					title: "Dropdown Menu",
+					href: "/docs/components/dropdown-menu",
+					items: [],
+				},
+				{
+					title: "Label",
+					href: "/docs/components/label",
+					items: [],
+				},
+				{
+					title: "Link Preview",
+					href: "/docs/components/link-preview",
+					items: [],
+				},
+				{
+					title: "Menubar",
+					href: "/docs/components/menubar",
+					items: [],
+				},
+				{
+					title: "Pagination",
+					href: "/docs/components/pagination",
+					items: [],
+				},
+				{
+					title: "PIN Input",
+					href: "/docs/components/pin-input",
+					items: [],
+				},
+				{
+					title: "Popover",
+					href: "/docs/components/popover",
+					items: [],
+				},
+				{
+					title: "Progress",
+					href: "/docs/components/progress",
+					items: [],
+				},
+				{
+					title: "Radio Group",
+					href: "/docs/components/radio-group",
+					items: [],
+				},
+				{
+					title: "Range Calendar",
+					href: "/docs/components/range-calendar",
+					items: [],
+				},
+				{
+					title: "Scroll Area",
+					href: "/docs/components/scroll-area",
+					label: "New",
+					items: [],
+				},
+				{
+					title: "Select",
+					href: "/docs/components/select",
+					items: [],
+				},
+				{
+					title: "Separator",
+					href: "/docs/components/separator",
+					items: [],
+				},
+				{
+					title: "Slider",
+					href: "/docs/components/slider",
+					items: [],
+				},
+				{
+					title: "Switch",
+					href: "/docs/components/switch",
+					items: [],
+				},
+				{
+					title: "Tabs",
+					href: "/docs/components/tabs",
+					items: [],
+				},
+				{
+					title: "Toggle",
+					href: "/docs/components/toggle",
+					items: [],
+				},
+				{
+					title: "Toggle Group",
+					href: "/docs/components/toggle-group",
+					items: [],
+				},
+				{
+					title: "Toolbar",
+					href: "/docs/components/toolbar",
+					items: [],
+				},
+				{
+					title: "Tooltip",
+					href: "/docs/components/tooltip",
+					items: [],
+				},
+			],
+		},
+	],
+};
+
+---
+.\frontend\src\lib\config\site.ts
+---
+export const siteConfig = {
+	name: "Bits UI",
+	url: "https://www.bits-ui.com",
+	description: "Headless components for Svelte.",
+	ogImage: "https://www.bits-ui.com/og.png",
+	links: {
+		melt: "https://melt-ui.com",
+		meltGithub: "https://github.com/melt-ui/melt-ui",
+		twitter: "https://twitter.com/huntabyte",
+		github: "https://github.com/huntabyte/bits-ui",
+	},
+	keywords: `Svelte,SvelteKit,Svelte Components,Headless Svelte Components,Headless UI Svelte`,
+};
+
+export type SiteConfig = typeof siteConfig;
+
+---
+.\frontend\src\lib\styles\app.css
+---
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		/* Colors */
+		--background: 0 0% 100%;
+		--background-alt: 0 0% 100%;
+		--foreground: 0 0% 9%;
+		--foreground-alt: 0 0% 32%;
+		--muted: 240 5% 96%;
+		--muted-foreground: 0 0% 9% / 0.4;
+		--border: 240 6% 10%;
+		--border-input: 240 6% 10% / 0.17;
+		--border-input-hover: 240 6% 10% / 0.4;
+		--border-card: 240 6% 10% / 0.1;
+		--dark: 240 6% 10%;
+		--dark-10: 240 6% 10% / 0.1;
+		--dark-40: 240 6% 10% / 0.4;
+		--dark-04: 240 6% 10% / 0.04;
+		--accent: 204 94% 94%;
+		--accent-foreground: 204 80% 16%;
+		--destructive: 347 77% 50%;
+
+		/* black */
+		--constrast: 0 0% 0%;
+
+		/* Shadows */
+		--shadow-mini: 0px 1px 0px 1px rgba(0, 0, 0, 0.04);
+		--shadow-mini-inset: 0px 1px 0px 0px rgba(0, 0, 0, 0.04) inset;
+		--shadow-popover: 0px 7px 12px 3px hsla(var(--dark-10));
+		--shadow-kbd: 0px 2px 0px 0px rgba(0, 0, 0, 0.07);
+		--shadow-btn: 0px 1px 0px 1px rgba(0, 0, 0, 0.03);
+		--shadow-card: 0px 2px 0px 1px rgba(0, 0, 0, 0.04);
+		--shadow-date-field-focus: 0px 0px 0px 3px rgba(24, 24, 27, 0.17);
+	}
+
+	.dark {
+		/* Colors */
+		--background: 0 0% 5%;
+		--background-alt: 0 0% 8%;
+		--foreground: 0 0% 95%;
+		--foreground-alt: 0 0% 70%;
+		--muted: 240 4% 16%;
+		--muted-foreground: 0 0% 100% / 0.4;
+		--border: 0 0% 96%;
+		--border-input: 0 0% 96% / 0.17;
+		--border-input-hover: 0 0% 96% / 0.4;
+		--border-card: 0 0% 96% / 0.1;
+		--dark: 0 0% 96%;
+		--dark-40: 0 0% 96% / 0.4;
+		--dark-10: 0 0% 96% / 0.1;
+		--dark-04: 0 0% 96% / 0.04;
+		--accent: 204 90 90%;
+		--accent-foreground: 204 94% 94%;
+		--destructive: 350 89% 60%;
+
+		/* white */
+		--constrast: 0 0% 100%;
+
+		/* Shadows */
+		--shadow-mini: 0px 1px 0px 1px rgba(0, 0, 0, 0.3);
+		--shadow-mini-inset: 0px 1px 0px 0px rgba(0, 0, 0, 0.5) inset;
+		--shadow-popover: 0px 7px 12px 3px hsla(0deg 0% 0% / 30%);
+		--shadow-kbd: 0px 2px 0px 0px rgba(255, 255, 255, 0.07);
+		--shadow-btn: 0px 1px 0px 1px rgba(0, 0, 0, 0.2);
+		--shadow-card: 0px 2px 0px 1px rgba(0, 0, 0, 0.4);
+		--shadow-date-field-focus: 0px 0px 0px 3px rgba(244, 244, 245, 0.1);
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+	html {
+		-webkit-text-size-adjust: 100%;
+		font-variation-settings: normal;
+	}
+	body {
+		@apply bg-background text-foreground;
+		font-feature-settings:
+			"rlig" 1,
+			"calt" 1;
+	}
+
+	/* Mobile tap highlight */
+	/* https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-tap-highlight-color */
+	html {
+		-webkit-tap-highlight-color: rgba(128, 128, 128, 0.5);
+	}
+	::selection {
+		background: #fdffa4;
+		color: black;
+	}
+
+	/* === Scrollbars === */
+
+	::-webkit-scrollbar {
+		@apply w-2;
+		@apply h-2;
+	}
+
+	::-webkit-scrollbar-track {
+		@apply !bg-transparent;
+	}
+	::-webkit-scrollbar-thumb {
+		@apply rounded-card-lg !bg-dark-10;
+	}
+
+	::-webkit-scrollbar-corner {
+		background: rgba(0, 0, 0, 0);
+	}
+
+	/* Firefox */
+	/* https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color#browser_compatibility */
+
+	html {
+		scrollbar-color: var(--bg-muted);
+	}
+
+	.antialised {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+}
+
+@layer utilities {
+	.step {
+		counter-increment: step;
+	}
+
+	.step:before {
+		@apply absolute inline-flex h-9 w-9 items-center justify-center rounded-full border-4 border-background bg-muted text-center -indent-px font-mono text-base font-medium;
+		@apply ml-[-50px] mt-[-4px];
+		content: counter(step);
+	}
+}
+
+@layer components {
+	*:not(body) {
+		outline: none !important;
+		&:focus-visible {
+			@apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+		}
+	}
+
+	.link {
+		@apply inline-flex items-center gap-1 rounded-sm font-medium underline underline-offset-4 hover:text-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	input[type="number"] {
+		-moz-appearance: textfield;
+	}
+}
+
+---
+.\frontend\src\lib\utils\copy-code.ts
+---
+import { writable } from "svelte/store";
+import { browser } from "$app/environment";
+
+export function createCopyCodeButton() {
+	let codeString = "";
+	const copied = writable(false);
+	let copyTimeout = 0;
+
+	function copyCode() {
+		if (!browser) return;
+		navigator.clipboard.writeText(codeString);
+		copied.set(true);
+		clearTimeout(copyTimeout);
+		copyTimeout = window.setTimeout(() => {
+			copied.set(false);
+		}, 2500);
+	}
+
+	function setCodeString(node: HTMLElement) {
+		codeString = node.innerText.trim() ?? "";
+	}
+
+	return {
+		copied,
+		copyCode,
+		setCodeString,
+	};
+}
+
+
+---
+.\frontend\src\lib\utils\docs.ts
+---
+import { error, redirect } from "@sveltejs/kit";
+import type { Doc } from "contentlayer/generated/index.js";
+import { getAPISchemas, isBit } from "$lib/content/api-reference/index.js";
+import type { APISchema } from "$lib/types/index.js";
+
+export type FrontMatter = Pick<Doc, "title" | "description">;
+
+export type DocFile = {
+	default: import("svelte").SvelteComponent;
+	metadata: FrontMatter;
+};
+
+export type DocResolver = () => Promise<DocFile>;
+
+type TDoc = {
+	component: DocFile["default"];
+	metadata: DocFile["metadata"];
+	title: string;
+};
+
+type ComponentDoc = {
+	component: DocFile["default"];
+	metadata: DocFile["metadata"];
+	title: DocFile["metadata"]["title"];
+	schemas: APISchema[];
+};
+
+export function slugFromPath(path: string) {
+	return path.replace("/content/", "").replace(".md", "");
+}
+
+export async function getDoc(slug: string): Promise<TDoc> {
+	if (slug === "components") {
+		redirect(303, "/docs/components/accordion");
+	}
+
+	const modules = import.meta.glob(`/content/**/*.md`);
+
+	let match: { path?: string; resolver?: DocResolver } = {};
+
+	for (const [path, resolver] of Object.entries(modules)) {
+		if (slugFromPath(path) === slug) {
+			match = { path, resolver: resolver as unknown as DocResolver };
+			break;
+		}
+	}
+
+	const doc = await match?.resolver?.();
+
+	if (!doc || !doc.metadata) {
+		error(404);
+	}
+
+	return {
+		component: doc.default,
+		metadata: doc.metadata,
+		title: doc.metadata.title,
+	};
+}
+
+export async function getComponentDoc(slug: string): Promise<ComponentDoc> {
+	if (slug === "components") {
+		redirect(303, "/docs/components/accordion");
+	}
+
+	if (!isBit(slug)) {
+		error(404);
+	}
+
+	const modules = import.meta.glob("/content/**/*.md");
+
+	let match: { path?: string; resolver?: DocResolver } = {};
+
+	for (const [path, resolver] of Object.entries(modules)) {
+		if (slugFromPath(path).replace("components/", "") === slug) {
+			match = { path, resolver: resolver as unknown as DocResolver };
+			break;
+		}
+	}
+
+	const doc = await match?.resolver?.();
+	if (!doc || !doc.metadata) {
+		error(404);
+	}
+
+	return {
+		component: doc.default,
+		metadata: doc.metadata,
+		title: doc.metadata.title,
+		schemas: getAPISchemas(slug),
+	};
+}
+
+
+---
+.\frontend\src\lib\utils\index.ts
+---
+export * from "./styles.js";
+export * from "./copy-code.js";
+export * from "./markdown.js";
+export * from "./styles.js";
+export * from "./transitions.js";
+
+
+---
+.\frontend\src\lib\utils\markdown.ts
+---
+export function parseMarkdown(text: string) {
+	return text
+		.replace(/`([^`]+)`/g, "<Code neutral class='!text-[12px]'>$1</Code>")
+		.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+		.replace(/\*([^*]+)\*/g, "<em>$1</em>")
+		.replace(/_([^_]+)_/g, "<em>$1</em>")
+		.replace(/~~([^~]+)~~/g, "<del>$1</del>")
+		.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "<a class='link' href='$2'>$1</a>")
+		.replace(/&gt;([^>]+)\n/g, "<blockquote>$1</blockquote>")
+		.replace(/\n/g, "<br />");
+}
+
+export function parseTypeDef(text: string) {
+	return text.replace(/\n/g, "<br />");
+}
+
+
+---
+.\frontend\src\lib\utils\styles.ts
+---
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs));
+}
+
+
+---
+.\frontend\src\lib\utils\transitions.ts
+---
+import { cubicOut } from "svelte/easing";
+import type { TransitionConfig } from "svelte/transition";
+
+type FlyAndScaleParams = {
+	y?: number;
+	start?: number;
+	duration?: number;
+};
+
+const defaultFlyAndScaleParams = { y: -8, start: 0.95, duration: 200 };
+
+export function flyAndScale(node: Element, params?: FlyAndScaleParams): TransitionConfig {
+	const style = getComputedStyle(node);
+	const transform = style.transform === "none" ? "" : style.transform;
+	const withDefaults = { ...defaultFlyAndScaleParams, ...params };
+
+	const scaleConversion = (
+		valueA: number,
+		scaleA: [number, number],
+		scaleB: [number, number]
+	) => {
+		const [minA, maxA] = scaleA;
+		const [minB, maxB] = scaleB;
+
+		const percentage = (valueA - minA) / (maxA - minA);
+		const valueB = percentage * (maxB - minB) + minB;
+
+		return valueB;
+	};
+
+	const styleToString = (style: Record<string, number | string | undefined>): string => {
+		return Object.keys(style).reduce((str, key) => {
+			if (style[key] === undefined) return str;
+			return `${str}${key}:${style[key]};`;
+		}, "");
+	};
+
+	return {
+		duration: withDefaults.duration ?? 200,
+		delay: 0,
+		css: (t) => {
+			const y = scaleConversion(t, [0, 1], [withDefaults.y, 0]);
+			const scale = scaleConversion(t, [0, 1], [withDefaults.start, 1]);
+
+			return styleToString({
+				transform: `${transform} translate3d(0, ${y}px, 0) scale(${scale})`,
+				opacity: t,
+			});
+		},
+		easing: cubicOut,
+	};
+}
+
+
+---
+.\frontend\src\routes\+layout.svelte
+---
+<script>
+	import '../app.css';
+	import Navbar from '$lib/components/navigation/main-nav.svelte';
+	import Footer from '$lib/components/layout/Footer.svelte';
+	import Hero from '$lib/components/layout/Hero.svelte';
+    import { ModeWatcher } from "mode-watcher";
+    // import MainNavbar from '$lib/components/MainNavbar.svelte';
+</script>
+
+<div class="flex flex-col min-h-screen">
+	<Navbar />
+	<main class="flex-grow">
+        <ModeWatcher />
+		<slot />
+	</main>
+	<Footer />
+</div>
+
+---
+.\frontend\src\routes\+page.svelte
+---
+<script lang="ts">
+  import { processVideo } from "$lib/api";
+  import { Button } from "$lib/components/ui/button";
+  import { Input } from "$lib/components/ui/input";
+  import { goto } from "$app/navigation";
+
+  let youtubeUrl = "";
+  let processingMode = "simple";
+  let error: string | null = null;
+  let isProcessing = false;
+
+  async function handleSubmit() {
+    if (!youtubeUrl) {
+      error = "Please enter a YouTube URL";
+      return;
+    }
+
+    error = null;
+    isProcessing = true;
+
+    try {
+      console.log(`Processing video with URL: ${youtubeUrl} and mode: ${processingMode}`);
+      const result = await processVideo(youtubeUrl, processingMode);
+      console.log('Video processing result:', result);
+      goto(`/video/${result.youtube_id}`);
+    } catch (err) {
+      console.error('Error processing video:', err);
+      error = err instanceof Error ? err.message : "An error occurred while processing the video";
+    } finally {
+      isProcessing = false;
+    }
+  }
+</script>
+
+<svelte:head>
+  <title>Process Video | Stepify</title>
+</svelte:head>
+
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-4">Process YouTube Video</h1>
+
+  <form on:submit|preventDefault={handleSubmit} class="space-y-4">
+    <div>
+      <label for="youtubeUrl" class="block text-sm font-medium text-gray-700">YouTube URL</label>
+      <Input type="text" id="youtubeUrl" bind:value={youtubeUrl} placeholder="https://www.youtube.com/watch?v=..." />
+    </div>
+
+    <div>
+      <label for="processingMode" class="block text-sm font-medium text-gray-700">Processing Mode</label>
+      <select
+        id="processingMode"
+        bind:value={processingMode}
+        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+      >
+        <option value="simple">Simple</option>
+        <option value="detailed">Detailed</option>
+      </select>
+    </div>
+
+    <Button type="submit" disabled={isProcessing}>
+      {isProcessing ? 'Processing...' : 'Process Video'}
+    </Button>
+  </form>
+
+  {#if error}
+    <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">Error!</strong>
+      <span class="block sm:inline">{error}</span>
+    </div>
+  {/if}
+</div>
+
+---
+.\frontend\src\routes\auth\callback\[provider].svelte
+---
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
+    import { loginWithOAuth } from '$lib/apiLAST';
+    
+    export let params: { provider: string };
+    
+    onMount(async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            try {
+                const result = await loginWithOAuth(params.provider, code);
+                // Token is already stored in localStorage by the loginWithOAuth function
+                goto('/dashboard');
+            } catch (error) {
+                console.error('OAuth login failed', error);
+                goto('/login?error=oauth_failed');
+            }
+        } else {
+            goto('/login?error=no_code');
+        }
+    });
+    </script>
+    
+    <div>Processing OAuth login...</div>
+
+---
+.\frontend\src\routes\auth\login\+page.svelte
+---
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { loginWithOAuth } from '$lib/apiLAST';
+  import { Button } from "$lib/components/ui/button";
+  
+  let error = '';
+  
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code) {
+      handleOAuthLogin('google', code);
+    }
+  });
+  
+  function initiateOAuthLogin() {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
+    
+    if (!clientId || !redirectUri) {
+      console.error('Google OAuth credentials are not properly configured');
+      error = 'OAuth configuration error. Please check the console for details.';
+      return;
+    }
+  
+    const scope = 'openid profile email';
+    
+    const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    googleAuthUrl.searchParams.append('client_id', clientId);
+    googleAuthUrl.searchParams.append('redirect_uri', redirectUri);
+    googleAuthUrl.searchParams.append('response_type', 'code');
+    googleAuthUrl.searchParams.append('scope', scope);
+    googleAuthUrl.searchParams.append('access_type', 'offline');
+    googleAuthUrl.searchParams.append('prompt', 'consent');
+  
+    window.location.href = googleAuthUrl.toString();
+  }
+  
+    async function handleOAuthLogin(provider: string, code: string) {
+    try {
+      console.log(`Attempting to login with provider: ${provider}, code: ${code}`);
+      const result = await loginWithOAuth(provider, code);
+      console.log("Login successful", result);
+      goto('/dashboard');
+    } catch (err) {
+      console.error("Login failed", err);
+      if (err instanceof Error) {
+        error = err.message;
+        console.error("Error details:", err);
+      } else {
+        error = 'An unknown error occurred during login';
+        console.error("Unknown error:", err);
+      }
+    }
+  }
+  
+  </script>
+  
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">Login</h1>
+    {#if error}
+      <p class="text-red-500 mb-4">{error}</p>
+    {/if}
+    <Button on:click={initiateOAuthLogin}>Login with Google</Button>
+  </div>
+
+---
+.\frontend\src\routes\billing\status.svelte
+---
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { getSubscriptionStatus } from '$lib/apiLAST';
+    
+    interface SubscriptionStatus {
+        is_subscribed: boolean;
+        plan: string;
+        end_date: string | null;
+    }
+    
+    let status: SubscriptionStatus | null = null;
+    
+    onMount(async () => {
+        try {
+            status = await getSubscriptionStatus();
+        } catch (error) {
+            console.error('Failed to fetch subscription status', error);
+        }
+    });
+    </script>
+    
+    <h1>Subscription Status</h1>
+    {#if status}
+        <p>Subscribed: {status.is_subscribed}</p>
+        <p>Plan: {status.plan}</p>
+        <p>Ends at: {status.end_date || 'N/A'}</p>
+    {:else}
+        <p>Loading subscription status...</p>
+    {/if}
+
+---
+.\frontend\src\routes\billing\subscribe.svelte
+---
+<script lang="ts">
+import { createSubscription } from '$lib/apiLAST';
+
+let plan = 'basic';
+
+async function handleSubscribe() {
+    try {
+        const result = await createSubscription(plan);
+        window.location.href = result.checkout_url;
+    } catch (error) {
+        console.error('Subscription creation failed', error);
+    }
+}
+</script>
+
+<h1>Choose a Subscription Plan</h1>
+<select bind:value={plan}>
+    <option value="basic">Basic Plan</option>
+    <option value="pro">Pro Plan</option>
+</select>
+<button on:click={handleSubscribe}>Subscribe</button>
+
+
+
+---
+.\frontend\src\routes\billing\setup\+page.svelte
+---
+<script lang="ts">
+    import { setupBilling } from '$lib/apiLAST';
+    import { goto } from '$app/navigation';
+    
+    let error = '';
+    
+    async function handleSetupBilling() {
+      try {
+        await setupBilling();
+        goto('/billing/subscribe');
+      } catch (err) {
+        error = err instanceof Error ? err.message : 'An error occurred during billing setup';
+      }
+    }
+    </script>
+    
+    <h1>Setup Billing</h1>
+    <button on:click={handleSetupBilling}>Setup Billing</button>
+    
+    {#if error}
+      <p class="error">{error}</p>
+    {/if}
+
+---
+.\frontend\src\routes\billing\status\+page.svelte
+---
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { getSubscriptionStatus } from '$lib/apiLAST';
+    
+    let status = null;
+    
+    onMount(async () => {
+        try {
+            status = await getSubscriptionStatus();
+        } catch (error) {
+            console.error('Failed to fetch subscription status', error);
+        }
+    });
+    </script>
+    
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold mb-4">Subscription Status</h1>
+      {#if status}
+        <p>Subscribed: {status.is_subscribed}</p>
+        <p>Plan: {status.plan}</p>
+        <p>Ends at: {status.end_date || 'N/A'}</p>
+      {:else}
+        <p>Loading subscription status...</p>
+      {/if}
+    </div>
+
+---
+.\frontend\src\routes\billing\subscribe\+page.svelte
+---
+<script lang="ts">
+    import { createSubscription } from '$lib/apiLAST';
+    
+    let plan = 'basic';
+    let error = '';
+    
+    async function handleSubscribe() {
+      try {
+        const result = await createSubscription(plan);
+        if (result.checkout_url) {
+          window.location.href = result.checkout_url;
+        } else {
+          error = 'Failed to create subscription. Please try again.';
+        }
+      } catch (err) {
+        error = err instanceof Error ? err.message : 'An error occurred. Please try again.';
+      }
+    }
+    </script>
+    
+    <h1>Choose a Subscription Plan</h1>
+    <select bind:value={plan}>
+      <option value="basic">Basic Plan</option>
+      <option value="pro">Pro Plan</option>
+    </select>
+    <button on:click={handleSubscribe}>Subscribe</button>
+    
+    {#if error}
+      <p class="error">{error}</p>
+    {/if}
+
+---
+.\frontend\src\routes\dash\+page.svelte
+---
+<script lang="ts">
+  import { Search, ChevronDown, Copy } from 'lucide-svelte';
+  import { Button } from "$lib/components/ui/button";
+  import { Input } from "$lib/components/ui/input";
+  import * as Accordion from "$lib/components/ui/accordion";
+
+  let searchQuery = "";
+  let filterQuery = "";
+  let sortOrder = "Newest";
+
+  const models = [
+    {
+      name: "xAI: Grok 2 mini",
+      description: "Grok 2 Mini is xAI's fast, lightweight language model that offers a balance between speed and answer quality. To use the stronger model, see Grok 2. For more information, see the launch ...",
+      creator: "x-ai",
+      contextLength: "33K context",
+      inputTokens: "$4.2/M input tokens",
+      outputTokens: "$6.9/M output tokens",
+      totalTokens: "5.39M tokens"
+    },
+    {
+      name: "xAI: Grok 2",
+      description: "Grok 2 is xAI's frontier language model with state-of-the-art reasoning capabilities, best for complex and multi-step use cases. To use a faster version, see Grok 2 Mini. For more information...",
+      creator: "x-ai",
+      contextLength: "33K context",
+      inputTokens: "$4.2/M input tokens",
+      outputTokens: "$6.9/M output tokens",
+      totalTokens: "42.7M tokens"
+    },
+    {
+      name: "Inflection: Inflection 3 Productivity",
+      description: "Inflection 3 Productivity is a powerful language model designed for...",
+      creator: "Inflection",
+      contextLength: "32K context",
+      inputTokens: "$4.0/M input tokens",
+      outputTokens: "$6.5/M output tokens",
+      totalTokens: "3.75M tokens"
+    }
+  ];
+
+  function copyModelName(name: string) {
+    navigator.clipboard.writeText(name);
+    // You might want to add a toast notification here
+  }
+</script>
+
+<div class="flex h-screen bg-white">
+  <!-- Sidebar -->
+  <aside class="w-64 border-r p-4">
+    <Accordion.Root type="single" collapsible>
+      <Accordion.Item value="modality">
+        <Accordion.Trigger class="flex w-full items-center justify-between">
+          Modality
+          <ChevronDown class="h-4 w-4" />
+        </Accordion.Trigger>
+        <Accordion.Content>
+          <div class="mt-2 space-y-2">
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-2" />
+              Text to Text
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-2" />
+              Text & Image to Text
+            </label>
+          </div>
+        </Accordion.Content>
+      </Accordion.Item>
+
+      <Accordion.Item value="context-length">
+        <Accordion.Trigger class="flex w-full items-center justify-between">
+          Context length
+          <ChevronDown class="h-4 w-4" />
+        </Accordion.Trigger>
+        <Accordion.Content>
+          <input type="range" class="w-full" min="4000" max="1000000" step="1000" />
+        </Accordion.Content>
+      </Accordion.Item>
+
+      <Accordion.Item value="prompt-pricing">
+        <Accordion.Trigger class="flex w-full items-center justify-between">
+          Prompt pricing
+          <ChevronDown class="h-4 w-4" />
+        </Accordion.Trigger>
+        <Accordion.Content>
+          <input type="range" class="w-full" min="0" max="10" step="0.1" />
+        </Accordion.Content>
+      </Accordion.Item>
+
+      <Accordion.Item value="series">
+        <Accordion.Trigger class="flex w-full items-center justify-between">
+          Series
+          <ChevronDown class="h-4 w-4" />
+        </Accordion.Trigger>
+        <Accordion.Content>
+          <div class="mt-2 space-y-2">
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-2" />
+              GPT
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-2" />
+              Claude
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-2" />
+              Gemini
+            </label>
+          </div>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <header class="mb-8 flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <h1 class="text-2xl font-bold">OpenRouter</h1>
+        <div class="relative">
+          <Search class="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+          <Input type="text" placeholder="Search models" class="pl-8" bind:value={searchQuery} />
+        </div>
+      </div>
+      <nav class="flex items-center space-x-4">
+        <a href="" class="text-blue-600">Browse</a>
+        <a href="" class="text-gray-600">Chat</a>
+        <a href="" class="text-gray-600">Rankings</a>
+        <a href="" class="text-gray-600">Docs</a>
+        <Button>Sign in</Button>
+      </nav>
+    </header>
+
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Models</h2>
+      <span class="text-sm text-gray-500">250 models</span>
+    </div>
+
+    <div class="mb-4 flex items-center justify-between">
+      <Input type="text" placeholder="Filter models" class="w-64" bind:value={filterQuery} />
+      <select bind:value={sortOrder} class="rounded border p-2">
+        <option>Newest</option>
+        <option>Oldest</option>
+        <option>Most popular</option>
+      </select>
+    </div>
+
+    <div class="space-y-4">
+      {#each models as model}
+        <div class="rounded border p-4">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="text-lg font-semibold">{model.name}</h3>
+              <p class="mt-1 text-sm text-gray-600">{model.description}</p>
+            </div>
+            <Button variant="outline" size="sm" on:click={() => copyModelName(model.name)}>
+              <Copy class="mr-2 h-4 w-4" />
+              Copy
+            </Button>
+          </div>
+          <div class="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+            <span>by {model.creator}</span>
+            <span>{model.contextLength}</span>
+            <span>{model.inputTokens}</span>
+            <span>{model.outputTokens}</span>
+          </div>
+          <div class="mt-2 text-right text-sm font-semibold">{model.totalTokens}</div>
+        </div>
+      {/each}
+    </div>
+  </main>
+</div>
+
+---
+.\frontend\src\routes\profile\+page.svelte
+---
+<script>
+    import { onMount } from 'svelte';
+    import { user } from '$lib/stores/user';
+    import { api } from '$lib/utils/api';
+  
+    let name = '';
+    let bio = '';
+    let message = '';
+  
+    onMount(async () => {
+      if ($user) {
+        name = $user.name || '';
+        bio = $user.bio || '';
+      }
+    });
+  
+    async function updateProfile() {
+      try {
+        const updatedUser = await api.put('/users/me', { name, bio });
+        user.set(updatedUser);
+        message = 'Profile updated successfully!';
+      } catch (error) {
+        message = 'Failed to update profile. Please try again.';
+      }
+    }
+  </script>
+  
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">Your Profile</h1>
+    <form on:submit|preventDefault={updateProfile} class="max-w-md">
+      <div class="mb-4">
+        <label for="name" class="block mb-2">Name</label>
+        <input type="text" id="name" bind:value={name} class="w-full px-3 py-2 border rounded">
+      </div>
+      <div class="mb-4">
+        <label for="bio" class="block mb-2">Bio</label>
+        <textarea id="bio" bind:value={bio} rows="4" class="w-full px-3 py-2 border rounded"></textarea>
+      </div>
+      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+        Update Profile
+      </button>
+    </form>
+    {#if message}
+      <p class="mt-4 text-green-500">{message}</p>
+    {/if}
+  </main>
+
+---
+.\frontend\src\routes\video\[id]\+page.svelte
+---
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { getVideoResult, updateVideoSummary, updateVideoTranscript } from "$lib/api";
+  import { Button } from "$lib/components/ui/button";
+  import TiptapEditor from "$lib/components/TipTapEditor.svelte";
+
+  export let data: { id: string };
+  
+  let videoResult: any = null;
+  let error: string | null = null;
+  let summaryEditMode = false;
+  let transcriptEditMode = false;
+  let tempSummary = "";
+  let tempTranscript = "";
+  
+  onMount(async () => {
+    try {
+      if (data && data.id) {
+        console.log(`Fetching video with ID: ${data.id}`);
+        videoResult = await getVideoResult(data.id);
+        console.log('Received video result:', videoResult);
+        tempSummary = videoResult.summary;
+        tempTranscript = videoResult.paragraphs;
+      } else {
+        throw new Error("Video ID is missing");
+      }
+    } catch (err) {
+      console.error("Error fetching video result:", err);
+      error = err instanceof Error ? err.message : "An error occurred while fetching the result";
+    }
+  });
+
+  function formatContent(content: string) {
+    return content.split('\n').map(line => `<p>${line}</p>`).join('');
+  }
+
+  async function handleSummaryUpdate(newSummary: string) {
+    tempSummary = newSummary;
+  }
+
+  async function handleTranscriptUpdate(newTranscript: string) {
+    tempTranscript = newTranscript;
+  }
+
+  async function saveSummary() {
+    try {
+      await updateVideoSummary(data.id, tempSummary);
+      videoResult.summary = tempSummary;
+      summaryEditMode = false;
+    } catch (err) {
+      console.error("Error updating summary:", err);
+      error = err instanceof Error ? err.message : "An error occurred while updating the summary";
+    }
+  }
+
+  async function saveTranscript() {
+    try {
+      await updateVideoTranscript(data.id, tempTranscript);
+      videoResult.paragraphs = tempTranscript;
+      transcriptEditMode = false;
+    } catch (err) {
+      console.error("Error updating transcript:", err);
+      error = err instanceof Error ? err.message : "An error occurred while updating the transcript";
+    }
+  }
+
+  function toggleSummaryEditMode() {
+    summaryEditMode = !summaryEditMode;
+    if (!summaryEditMode) {
+      saveSummary();
+    }
+  }
+
+  function toggleTranscriptEditMode() {
+    transcriptEditMode = !transcriptEditMode;
+    if (!transcriptEditMode) {
+      saveTranscript();
+    }
+  }
+</script>
+
+<svelte:head>
+  <title>{videoResult ? videoResult.title : 'Loading...'} | Stepify</title>
+</svelte:head>
+
+<div class="container mx-auto px-4 py-8">
+  {#if error}
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">Error!</strong>
+      <span class="block sm:inline">{error}</span>
+    </div>
+  {:else if videoResult}
+    <h1 class="text-3xl font-bold mb-4">{videoResult.title}</h1>
+    <p class="mb-4">Video ID: {videoResult.youtube_id}</p>
+    
+    <div class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">Summary</h2>
+      <div class="flex justify-between items-center mb-2">
+        <p class="text-sm text-gray-600">Click to edit the summary</p>
+        <Button on:click={toggleSummaryEditMode}>
+          {summaryEditMode ? 'Save' : 'Edit'}
+        </Button>
+      </div>
+      {#if summaryEditMode}
+        <TiptapEditor content={tempSummary} onUpdate={handleSummaryUpdate} />
+      {:else}
+        <div class="prose max-w-none">
+          {@html formatContent(videoResult.summary)}
+        </div>
+      {/if}
+    </div>
+    
+    <div>
+      <h2 class="text-2xl font-semibold mb-2">Transcript</h2>
+      <div class="flex justify-between items-center mb-2">
+        <p class="text-sm text-gray-600">Click to edit the transcript</p>
+        <Button on:click={toggleTranscriptEditMode}>
+          {transcriptEditMode ? 'Save' : 'Edit'}
+        </Button>
+      </div>
+      {#if transcriptEditMode}
+        <TiptapEditor content={tempTranscript} onUpdate={handleTranscriptUpdate} />
+      {:else}
+        <div class="prose max-w-none">
+          {@html formatContent(videoResult.paragraphs)}
+        </div>
+      {/if}
+    </div>
+  {:else}
+    <p>Loading...</p>
+  {/if}
+</div>
+
+---
+.\frontend\src\routes\video\[id]\+page.ts
+---
+import type { PageLoad } from '@sveltejs/kit';
+
+export const load: PageLoad = ({ params }) => {
+  return {
+    id: params.id
+  };
+};
